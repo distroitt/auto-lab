@@ -1,6 +1,6 @@
 FROM alpine
 
-RUN apk add clang-extra-tools
+RUN apk add --no-cache clang-extra-tools
 
 WORKDIR /app
 
