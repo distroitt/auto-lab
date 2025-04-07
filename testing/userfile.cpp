@@ -3,13 +3,22 @@
 #include "main.cpp"
 using namespace std;
 
-TEST(TestGroupName, Subtest_1) {
-    Summer sum;
-  sum.push_back(1);
-  sum.push_back(2);
-  EXPECT_EQ(sum.a[1], 2);
-  EXPECT_EQ(sum.size, 1);
+template <typename T>
+class TemplateTest : public ::testing::Test {
+public:
+    T obj;
+};
+typedef ::testing::Types<Summer> Implementations;
+TYPED_TEST_SUITE(TemplateTest, Implementations);
+
+TYPED_TEST(TemplateTest, PushBackTest) {
+  this->obj.push_back(1);
+  this->obj.push_back(2);
+  
+  EXPECT_EQ(this->obj.a[1], 2); 
+  EXPECT_EQ(this->obj.size, 2); 
 }
+
 
 int main(int argc, char **argv)
 {
