@@ -1,7 +1,7 @@
 FROM alpine
 
-RUN apk add --no-cache clang-extra-tools
+RUN apk add --no-cache clang-extra-tools llvm
 
 WORKDIR /app
 
-ENTRYPOINT [ "clang-tidy" ]
+CMD clang-tidy files/*.cpp --config-file=configs/.clang-tidy
