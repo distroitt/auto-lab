@@ -6,6 +6,11 @@ import os
 import asyncio
 import uuid
 import time
+from fastapi import FastAPI, HTTPException, Response, Request, Depends
+from authx import AuthX, AuthXConfig
+import jwt, datetime
+from pydantic import BaseModel
+import requests
 from typing import Dict, Optional
 
 app = FastAPI()
@@ -18,13 +23,57 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
+JWT_SECRET_KEY = "goida"
+JWT_ALGORITHM = "HS256"
+JWT_ACCESS_COOKIE_NAME = "my_secret"
+ACCESS_TOKEN_EXPIRE_MINUTES = 30
+
+class UserLogin(BaseModel):
+    username: str
+    password: str
+
+def create_access_token(data: dict, expires_delta: int = ACCESS_TOKEN_EXPIRE_MINUTES) -> str:
+    to_encode = data.copy()
+    expire = datetime.datetime.utcnow() + datetime.timedelta(minutes=expires_delta)
+    to_encode.update({"exp": expire})
+    token = jwt.encode(to_encode, JWT_SECRET_KEY, algorithm=JWT_ALGORITHM)
+    return token
+
+def decode_access_token(token: str) -> dict:
+    try:
+        payload = jwt.decode(token, JWT_SECRET_KEY, algorithms=[JWT_ALGORITHM])
+    except jwt.ExpiredSignatureError:
+        raise HTTPException(status_code=401, detail="Token expired")
+    except jwt.InvalidTokenError:
+        raise HTTPException(status_code=401, detail="Invalid token")
+    return payload
+
+@app.post("/auth")
+async def root(creds: UserLogin, response: Response):
+    data = {'username' : creds.username, 'password': creds.password}
+    resp = requests.post(f"https://iis.bsuir.by/api/v1/auth/login", json=data)
+    if resp.status_code == 200:
+        token = create_access_token({"uid": creds.username})
+        response.set_cookie(key=JWT_ACCESS_COOKIE_NAME, value=token, httponly=True)
+        return {"access_token": token}
+    return HTTPException(401)
+
+async def get_current_user(request: Request) -> dict:
+    token = request.cookies.get(JWT_ACCESS_COOKIE_NAME)
+    if not token:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+    payload = decode_access_token(token)
+    print(payload)
+    return payload
+
 TASK_RESULTS: Dict[str, Optional[Dict]] = {}
 
-async def run_lint_check(task_id: str, file_paths: list):
+async def run_lint_check(task_id: str, file_paths: list, uid: str):
     try:
-        docker_cmd = f"docker run --rm -t -v $(pwd)/testing/files/{task_id}:/app -v $(pwd)/testing/configs:/app/configs distroit/lint"
+        docker_cmd = f"docker run --rm -t -v $(pwd)/testing/files/{uid}/{task_id}:/app -v $(pwd)/testing/configs:/app/configs distroit/lint"
         process = await asyncio.create_subprocess_shell(
-            docker_cmd + " | awk '/warning:/{w++} /error:/{e++} END{print \"Warnings: \" w, \"Errors: \" e}'" + f" && rm -rf $(pwd)/testing/files/{task_id}",
+            docker_cmd + " | awk '/warning:/{w++} /error:/{e++} END{print \"Warnings: \" w, \"Errors: \" e}'" + f" && rm -rf $(pwd)/testing/files/{uid}/{task_id}",
             stdout=asyncio.subprocess.PIPE,
             stderr=asyncio.subprocess.PIPE,
             shell=True
@@ -43,13 +92,14 @@ async def run_lint_check(task_id: str, file_paths: list):
         TASK_RESULTS[task_id] = {"status": "error", "message": str(e)}
 
 @app.post("/upload")
-async def upload_files(background_tasks: BackgroundTasks, files: list[UploadFile]):
+async def upload_files(background_tasks: BackgroundTasks, files: list[UploadFile], user: dict = Depends(get_current_user)):
     try:
+        uid = user.get("uid")
         task_id = str(uuid.uuid4())
-        os.makedirs(f"testing/files/{task_id}", exist_ok=True)
+        os.makedirs(f"testing/files/{uid}/{task_id}", exist_ok=True)
         file_paths = []
         for file in files:
-            file_path = f"testing/files/{task_id}/{file.filename}"
+            file_path = f"testing/files/{uid}/{task_id}/{file.filename}"
             async with aiofiles.open(file_path, "wb") as out:
                 content = await file.read()
                 await out.write(content)
@@ -58,7 +108,7 @@ async def upload_files(background_tasks: BackgroundTasks, files: list[UploadFile
 
         TASK_RESULTS[task_id] = {"status": "processing"}
         
-        background_tasks.add_task(run_lint_check, task_id, file_paths)
+        background_tasks.add_task(run_lint_check, task_id, file_paths, uid)
         
         return JSONResponse(content={"task_id": task_id})
         
