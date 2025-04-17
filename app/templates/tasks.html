@@ -1,0 +1,332 @@
+<!doctype html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Результаты проверки кода</title>
+    <style>
+        /* CSS остается без изменений */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+
+        .task-container {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            padding: 20px;
+            border-left: 5px solid #3498db;
+        }
+
+        .task-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+            cursor: pointer;
+        }
+
+        .task-id {
+            font-weight: bold;
+            color: #3498db;
+            font-family: monospace;
+            font-size: 1.1em;
+        }
+
+        .task-status {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: bold;
+        }
+
+        .status-completed {
+            background-color: #2ecc71;
+            color: white;
+        }
+
+        .status-processing {
+            background-color: #f39c12;
+            color: white;
+        }
+
+        .status-failed {
+            background-color: #e74c3c;
+            color: white;
+        }
+
+        .task-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+
+        .task-content.show {
+            max-height: 10000px;
+            transition: max-height 1s ease-in;
+        }
+
+        .error-summary {
+            font-weight: bold;
+            font-size: 1.1em;
+            margin: 15px 0 10px 0;
+            color: #2c3e50;
+        }
+
+        .error-group {
+            margin-bottom: 20px;
+            border-left: 4px solid #e74c3c;
+            background-color: #f8f9fa;
+            padding: 10px 15px;
+            border-radius: 5px;
+        }
+
+        .error-type {
+            font-weight: bold;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .error-item {
+            margin: 8px 0;
+            padding: 10px;
+            background-color: #fff;
+            border-radius: 4px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .file-name {
+            color: #2980b9;
+            font-weight: bold;
+        }
+
+        .line-number {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+
+        .error-description {
+            margin-top: 3px;
+        }
+
+        .circle-icon {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background-color: #e74c3c;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+
+        .toggle-icon {
+            margin-right: 10px;
+            transition: transform 0.3s;
+            display: inline-block;
+        }
+
+        .rotate {
+            transform: rotate(90deg);
+        }
+
+        .task-content>* {
+            margin-top: 10px;
+        }
+
+        .task-content.show {
+            padding-top: 10px;
+        }
+
+        /* Добавим стиль для индикатора загрузки */
+        #loading {
+            text-align: center;
+            padding: 20px;
+            font-size: 1.2em;
+            color: #3498db;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="loading">Загрузка результатов...</div>
+    <div id="tasks-container">
+        <!-- Здесь будут отображаться задачи, загруженные через API -->
+    </div>
+
+    <script>
+        
+
+
+        // Основная функция для загрузки данных через API
+        async function loadTasks() {
+            try {
+                const response = await fetch('/api/tasks');
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+
+                const data = await response.json();
+
+                // Скрываем индикатор загрузки
+                document.getElementById('loading').style.display = 'none';
+
+                // Рендерим полученные данные
+                renderTasks(data);
+            } catch (error) {
+                console.error('Ошибка при загрузке задач:', error);
+                document.getElementById('loading').textContent =
+                    'Произошла ошибка при загрузке данных. Пожалуйста, обновите страницу.';
+            }
+        }
+
+        // Функция для отображения задач на странице
+        function renderTasks(tasksData) {
+            const container = document.getElementById('tasks-container');
+
+            // Очищаем контейнер перед добавлением новых данных
+            container.innerHTML = '';
+
+            // Перебираем все задачи и создаем для них HTML-элементы
+            for (const [taskId, taskDescription] of Object.entries(tasksData)) {
+                const taskElement = createTaskElement(taskId, taskDescription);
+                container.prepend(taskElement);
+            }
+        }
+
+        // Создание элемента для отдельной задачи
+        function createTaskElement(taskId, taskDescription) {
+            const taskContainer = document.createElement('div');
+            taskContainer.className = 'task-container';
+
+            // Создаем заголовок задачи
+            const taskHeader = document.createElement('div');
+            taskHeader.className = 'task-header';
+            taskHeader.onclick = function () { toggleContent(this); };
+
+            const taskIdDiv = document.createElement('div');
+            taskIdDiv.className = 'task-id';
+            taskIdDiv.innerHTML = `<span class="toggle-icon">▶</span>ID: ${taskId}`;
+
+            const taskStatus = document.createElement('div');
+            taskStatus.className = `task-status status-${taskDescription.status}`;
+            taskStatus.textContent = taskDescription.status;
+
+            taskHeader.appendChild(taskIdDiv);
+            taskHeader.appendChild(taskStatus);
+            taskContainer.appendChild(taskHeader);
+
+            if (taskDescription.status !== "processing") {
+                const taskContent = document.createElement('div');
+                taskContent.className = 'task-content';
+
+                const contentWrapper = document.createElement('div');
+                contentWrapper.className = 'content-wrapper';
+
+                if (taskDescription.result) {
+                    const lines = taskDescription.result;
+                    let errorGroupOpen = false;
+
+                    lines.forEach(line => {
+                        if (line.includes('В файле найдено')) {
+                            const errorSummary = document.createElement('div');
+                            errorSummary.className = 'error-summary';
+                            errorSummary.textContent = line;
+                            contentWrapper.appendChild(errorSummary);
+                        }
+                        else if (line.includes('🛑 Ошибка:')) {
+                            if (errorGroupOpen) {
+                                // Закрываем предыдущую группу ошибок
+                                errorGroupOpen = false;
+                            }
+
+                            const errorGroup = document.createElement('div');
+                            errorGroup.className = 'error-group';
+
+                            const errorType = document.createElement('div');
+                            errorType.className = 'error-type';
+                            errorType.innerHTML = '<span class="circle-icon"></span>' +
+                                line.replace('🛑 Ошибка:', 'Ошибка:');
+
+                            errorGroup.appendChild(errorType);
+                            contentWrapper.appendChild(errorGroup);
+                            errorGroupOpen = true;
+                        }
+                        else if (line.includes('Файл:')) {
+                            const errorItem = document.createElement('div');
+                            errorItem.className = 'error-item';
+                            errorItem.innerHTML = line
+                                .replace('Файл:', '<span class="file-name">Файл:</span>')
+                                .replace('строка:', '<span class="line-number">строка:</span>')
+                                .replace('Описание:', '<br><span class="error-description">Описание:</span>');
+
+                            // Добавляем элемент в последнюю созданную группу ошибок
+                            const errorGroups = contentWrapper.querySelectorAll('.error-group');
+                            if (errorGroups.length > 0) {
+                                errorGroups[errorGroups.length - 1].appendChild(errorItem);
+                            } else {
+                                contentWrapper.appendChild(errorItem);
+                            }
+                        }
+                        else if (line.trim()) {
+                            const paragraph = document.createElement('p');
+                            paragraph.textContent = line;
+                            contentWrapper.appendChild(paragraph);
+                        }
+                    });
+                }
+
+                taskContent.appendChild(contentWrapper);
+                taskContainer.appendChild(taskContent);
+            }
+
+            return taskContainer;
+        }
+
+        // Функция для переключения состояния сворачивания/разворачивания контента
+        function toggleContent(header) {
+            const contentDiv = header.nextElementSibling;
+            const toggleIcon = header.querySelector('.toggle-icon');
+
+            if (contentDiv && contentDiv.classList.contains('task-content')) {
+                contentDiv.classList.toggle('show');
+                toggleIcon.classList.toggle('rotate');
+            }
+        }
+
+        // Автоматически разворачиваем задачи с проваленным статусом
+        function goida(){
+            const urlParams = new URLSearchParams(window.location.search);
+    const currentTaskId = urlParams.get("taskId");
+    for (let element of document.getElementsByClassName("task-header")) {
+        if (element.outerText.includes(`${currentTaskId}`)) {
+                element.click();
+            }
+        }
+
+        }
+        let pollingInterval;
+
+        // Загружаем задачи при загрузке страницы
+        document.addEventListener('DOMContentLoaded', () => {
+            loadTasks().then(() => {
+                goida();
+            });
+            
+        });
+    </script>
+</body>
+
+</html>
