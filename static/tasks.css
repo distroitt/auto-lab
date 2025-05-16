@@ -1,327 +1,532 @@
-/* CSS остается без изменений */
-body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    line-height: 1.6;
-    margin: 0;
-    padding: 20px;
-    background-color: #f5f5f5;
-    color: #333;
+/* Modern AutoLab Theme - Core Styles */
+:root {
+    --primary-color: #2980b9;
+    --primary-dark: #1a5981;
+    --primary-light: #3498db;
+    --secondary-color: #ecf0f1;
+    --success-color: #27ae60;
+    --warning-color: #f39c12;
+    --danger-color: #e74c3c;
+    --text-color: #2c3e50;
+    --text-light: #7f8c8d;
+    --border-radius: 8px;
+    --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    --transition: all 0.25s ease;
+    --font-main: 'Roboto', 'Segoe UI', system-ui, -apple-system, sans-serif;
+    --font-code: 'SF Mono', 'Consolas', monospace;
 }
 
+body {
+    font-family: var(--font-main);
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+    background-color: #f8f9fa;
+    color: var(--text-color);
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+}
+
+/* Modern Header */
+.main-header {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 16px 0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    font-size: 26px;
+    font-weight: 700;
+    color: white;
+    text-decoration: none;
+    letter-spacing: -0.5px;
+}
+
+.main-nav {
+    display: flex;
+    align-items: center;
+}
+
+.nav-link {
+    color: white;
+    text-decoration: none;
+    padding: 8px 16px;
+    border-radius: var(--border-radius);
+    transition: var(--transition);
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.nav-link:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+}
+
+/* Modern Content Area */
+.main-content {
+    padding: 32px 0;
+}
+
+.page-title {
+    margin-top: 0;
+    margin-bottom: 24px;
+    color: var(--text-color);
+    font-size: 28px;
+    font-weight: 600;
+}
+
+#loading {
+    text-align: center;
+    padding: 40px;
+    font-size: 16px;
+    color: var(--text-light);
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: var(--border-radius);
+    box-shadow: var(--card-shadow);
+}
+
+/* Task Containers */
 .task-container {
     background-color: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    margin-bottom: 30px;
-    padding: 20px;
-    border-left: 5px solid #3498db;
+    border-radius: var(--border-radius);
+    box-shadow: var(--card-shadow);
+    margin-bottom: 20px;
+    overflow: hidden;
+    border: none;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.task-container:hover {
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+    transform: translateY(-2px);
 }
 
 .task-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 1px solid #eee;
-    padding-bottom: 10px;
-    margin-bottom: 15px;
+    padding: 18px 22px;  /* Увеличенные отступы */
     cursor: pointer;
+    transition: var(--transition);
+    border-left: 6px solid var(--primary-color);  /* Увеличенная ширина границы */
+    background: linear-gradient(to right, rgba(41, 128, 185, 0.05), transparent);  /* Градиент фона */
+    position: relative;  /* Для добавления псевдоэлементов */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);  /* Легкая тень */
+}
+
+.task-header:hover {
+    background: linear-gradient(to right, rgba(41, 128, 185, 0.1), rgba(41, 128, 185, 0.02));
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.06);
 }
 
 .task-id {
-    font-weight: bold;
-    color: #3498db;
-    font-family: monospace;
-    font-size: 1.1em;
-}
-
-.task-status {
-    padding: 4px 10px;
-    border-radius: 20px;
-    font-size: 0.9em;
-    font-weight: bold;
-}
-
-.status-completed {
-    background-color: #2ecc71;
-    color: white;
-}
-
-.status-processing {
-    background-color: #f39c12;
-    color: white;
-}
-
-.status-failed {
-    background-color: #e74c3c;
-    color: white;
-}
-
-.task-content {
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.3s ease-out;
-}
-
-.task-content.show {
-    max-height: 10000px;
-    transition: max-height 1s ease-in;
-}
-
-.error-summary {
-    font-weight: bold;
-    font-size: 1.1em;
-    margin: 15px 0 10px 0;
-    color: #2c3e50;
-}
-
-.error-group {
-    margin-bottom: 20px;
-    border-left: 4px solid #e74c3c;
-    background-color: #f8f9fa;
-    padding: 10px 15px;
-    border-radius: 5px;
-}
-
-.error-type {
-    font-weight: bold;
-    margin-bottom: 10px;
-    padding-bottom: 5px;
-    border-bottom: 1px solid #e0e0e0;
-}
-
-.error-item {
-    margin: 8px 0;
-    padding: 10px;
-    background-color: #fff;
-    border-radius: 4px;
-    border: 1px solid #e0e0e0;
-}
-
-.file-name {
-    color: #2980b9;
-    font-weight: bold;
-}
-
-.line-number {
-    color: #e74c3c;
-    font-weight: bold;
-}
-
-.error-description {
-    margin-top: 3px;
-}
-
-.circle-icon {
-    display: inline-block;
-    width: 18px;
-    height: 18px;
-    border-radius: 50%;
-    background-color: #e74c3c;
-    margin-right: 8px;
-    vertical-align: middle;
+    font-weight: 600;
+    color: var(--text-color);
+    font-family: var(--font-code);
+    font-size: 15px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
 .toggle-icon {
-    margin-right: 10px;
+    color: var(--primary-color);
     transition: transform 0.3s;
-    display: inline-block;
+    font-size: 14px;
 }
 
 .rotate {
     transform: rotate(90deg);
 }
 
-/* Модальное окно */
+.task-status {
+    padding: 6px 12px;
+    border-radius: 30px;
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.status-completed {
+    background-color: var(--success-color);
+    color: white;
+}
+
+.status-processing {
+    background-color: var(--warning-color);
+    color: white;
+}
+
+.status-failed {
+    background-color: var(--danger-color);
+    color: white;
+}
+
+/* Task Content */
+.task-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s cubic-bezier(0, 1, 0, 1);
+    padding: 0 20px;
+}
+
+.task-content.show {
+    max-height: 9999px;
+    transition: max-height 0.8s ease-in-out;
+    padding: 5px 20px 20px;
+}
+
+.content-wrapper {
+    margin-top: 16px;
+    border-top: 1px solid #edf2f7;
+    padding-top: 16px;
+}
+
+/* Modern Buttons */
+button {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: var(--transition);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+button:hover {
+    background-color: var(--primary-dark);
+    transform: translateY(-1px);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.12);
+}
+
+button:active {
+    transform: translateY(0);
+}
+
+button:disabled {
+    background-color: #cbd5e0;
+    cursor: not-allowed;
+    box-shadow: none;
+    transform: none;
+}
+
+.verdict-btn {
+    margin: 20px auto;
+    background-color: var(--primary-color);
+    display: block;
+}
+
+
+.show-test-btn {
+    margin-top: 8px;
+    background-color: #4a5568;
+    font-size: 13px;
+    padding: 8px 16px;
+}
+
+.show-test-btn:hover {
+    background-color: #2d3748;
+}
+
+/* Lint Results */
+.lint-header {
+    font-weight: 600;
+    margin-bottom: 18px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #edf2f7;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.lint-diagnostic {
+    border: 1px solid #edf2f7;
+    padding: 16px;
+    margin-bottom: 16px;
+    border-radius: var(--border-radius);
+    background-color: #fff;
+    transition: var(--transition);
+}
+
+.lint-diagnostic.improved-diag {
+    border-left: 4px solid var(--warning-color);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+}
+
+.lint-diagnostic:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+}
+
+.lint-title {
+    font-weight: 600;
+    margin-bottom: 10px;
+    font-size: 15px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.lint-message {
+    margin-bottom: 12px;
+    line-height: 1.5;
+    color: #4a5568;
+    font-size: 14px;
+}
+
+.lint-filepath {
+    font-size: 13px;
+    color: #718096;
+    margin: 10px 0;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.lint-no-issues {
+    color: var(--success-color);
+    font-weight: 600;
+    padding: 16px;
+    text-align: center;
+    background-color: rgba(46, 204, 113, 0.1);
+    border-radius: var(--border-radius);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+/* Test Results */
+.test-summary {
+    margin-bottom: 24px;
+    padding: 18px;
+    background-color: #f8fafc;
+    border-radius: var(--border-radius);
+    border: 1px solid #edf2f7;
+}
+
+.test-code-viewer {
+    border-radius: var(--border-radius);
+    margin-top: 12px;
+    background-color: #1a202c;
+    color: #f7fafc;
+    font-family: var(--font-code);
+    line-height: 1.5;
+}
+
+.test-code-viewer pre {
+    margin: 0;
+    padding: 16px;
+    overflow-x: auto;
+}
+
+/* Modal Dialog */
 .modal {
-    display: none; /* Скрыто по умолчанию */
+    display: none;
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5); /* Полупрозрачный фон */
-    z-index: 9999;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(3px);
     justify-content: center;
     align-items: center;
+    z-index: 1000;
 }
 
-/* Контейнер содержимого */
 .modal-content {
-    background-color: white;
-    max-width: 80%; /* Ограничиваем ширину */
-    width: 600px; /* Основная ширина */
-    max-height: 90%; /* Ограничиваем высоту */
-    overflow-y: auto; /* Добавляем прокрутку */
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-    font-family: Arial, sans-serif;
-    animation: modalFade 0.3s ease-out;
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    max-width: 800px;
+    width: 90%;
+    position: relative;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
 }
 
-/* Кнопка закрытия */
 .close-btn {
     position: absolute;
-    top: 10px;
-    right: 10px;
-    font-size: 1.5rem;
+    top: 16px;
+    right: 16px;
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: #a0aec0;
     cursor: pointer;
-    color: #888;
+    padding: 0;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: var(--transition);
 }
 
 .close-btn:hover {
-    color: #333;
+    background-color: #f7fafc;
+    color: #4a5568;
+    box-shadow: none;
+    transform: none;
 }
 
-/* Стили текста */
-.modal-content pre {
-    background: #f4f4f4;
-    padding: 10px;
-    margin-top: 10px;
-    border-radius: 4px;
-    overflow-x: auto; /* Прокрутка для длинных строк кода */
-    font-size: 0.95rem;
-    font-family: 'Courier New', monospace;
+/* AI Modal */
+#ai-modal-body {
+    font-size: 15px;
+    line-height: 1.6;
 }
 
-.modal-content code {
-    background: #f4f4f4;
-    padding: 3px 5px;
-    border-radius: 4px;
-    font-family: 'Courier New', monospace;
+#ai-modal-body h1, #ai-modal-body h2, #ai-modal-body h3 {
+    color: var(--text-color);
+    margin-top: 1.5em;
+    margin-bottom: 0.75em;
+}
+
+#ai-modal-body p {
+    margin-bottom: 1em;
 }
 
 #ai-modal-body pre {
     background: #282c34;
     color: #f8f8f2;
-    border-radius: 8px;
-    padding: 12px;
+    border-radius: var(--border-radius);
+    padding: 16px;
     overflow-x: auto;
-    margin-bottom: 10px;
-    font-size: 15px;
-    max-width: 100%;
+    margin-bottom: 16px;
+    font-size: 14px;
+    line-height: 1.5;
 }
 
-
-/* Многострочный код: управляет только цветом текста, фон выше */
 #ai-modal-body pre code {
     background: none;
     color: inherit;
-    font-family: "Fira Mono", "Consolas", "Monaco", monospace;
+    font-family: var(--font-code);
 }
-
 
 #ai-modal-body :not(pre) > code {
-    background: #eef2f7;
-    color: #1a1a1a;
+    background: #edf2f7;
+    color: #1a202c;
     border-radius: 4px;
     padding: 2px 5px;
-    font-family: "Fira Mono", "Consolas", "Monaco", monospace;
-    font-size: 95%;
-    /* можно добавить свойство, чтобы выглядело аккуратнее: */
-    word-break: break-word;
+    font-family: var(--font-code);
+    font-size: 90%;
 }
 
-.lint-header {
-    font-weight: bold;
-    margin-bottom: 8px;
-}
-
-.lint-diagnostic {
-    border: 1px solid #ccc;
-    padding: 8px;
-    margin-bottom: 6px;
-    border-radius: 4px;
-    background-color: #f9f9f9;
-}
-
-.lint-title {
-    font-weight: 600;
-    margin-bottom: 4px;
-    color: #c0392b; /* красный для ошибок/предупреждений */
-}
-
-.lint-message {
-    margin-bottom: 4px;
-}
-
-
-.lint-filepath {
-    font-style: italic;
-    color: #555;
-    margin-bottom: 4px;
-}
-
-.lint-notes ul {
-    margin: 4px 0 0 20px;
-    padding: 0;
-    list-style-type: disc;
-}
-
-.lint-diagnostic.improved-diag {
-    border-left: 5px solid #e67e22;
-    box-shadow: 0 1px 8px rgba(46, 204, 113, 0.04);
-    margin-bottom: 18px;
-    background: #fff9ea;
-}
-
-.lint-diagnostic.improved-diag .lint-title {
-    font-size: 1.08em;
-}
-
-.lint-diagnostic.improved-diag .lint-filepath {
-    font-size: 0.98em;
-    margin-bottom: 2px;
-    margin-top: 6px;
-}
-
-.lint-notes {
-    margin-left: 9px;
-    margin-bottom: 2px;
-}
-
-
-#ai-modal-body code {
-    color: #f8f8f2; /* тот же светлый, но не белый */
-    background: none;
-    font-family: "Fira Mono", "Consolas", "Monaco", monospace;
-}
-
-
-/* Для многострочного кода не добавляем лишних отступов */
-#ai-modal-body pre {
-    padding: 12px;
-    border-radius: 8px;
-    background: #282c34;
-    color: #fff;
-    margin-bottom: 10px;
-}
-
-/* Анимация появления модального окна */
+/* Animation */
 @keyframes modalFade {
+    from { opacity: 0; transform: translateY(-12px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.modal-content {
+    animation: modalFade 0.3s ease-out;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .container {
+        padding: 0 16px;
+    }
+
+    .task-header {
+        flex-wrap: wrap;
+    }
+
+    .task-status {
+        margin-top: 8px;
+    }
+
+    .modal-content {
+        padding: 20px;
+        width: 95%;
+    }
+}
+
+.notification {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    padding: 1rem 1.5rem;
+    border-radius: var(--border-radius);
+    color: white;
+    max-width: 350px;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.3s ease;
+    z-index: 1100;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.notification.notification-success {
+    background-color: var(--secondary-color);
+}
+
+.notification.notification-error {
+    background-color: #e74c3c;
+}
+
+.notification.notification-info {
+    background-color: var(--primary-color);
+}
+
+.notification.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.notification i {
+    font-size: 1.2rem;
+}
+
+.notification-close {
+    margin-left: auto;
+    cursor: pointer;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+}
+
+.notification-close:hover {
+    opacity: 1;
+}
+
+@keyframes fadeIn {
     from {
         opacity: 0;
-        transform: translateY(-50px);
     }
     to {
         opacity: 1;
-        transform: translateY(0);
     }
 }
 
-
-.task-content > * {
-    margin-top: 10px;
-}
-
-.task-content.show {
-    padding-top: 10px;
-}
-
-/* Добавим стиль для индикатора загрузки */
-#loading {
-    text-align: center;
-    padding: 20px;
-    font-size: 1.2em;
-    color: #3498db;
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -60%);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%);
+    }
 }

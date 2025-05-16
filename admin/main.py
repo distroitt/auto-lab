@@ -26,7 +26,7 @@ async def provide_code_endpoint(code: str = Body(...)):
 
 
 @router.get("/labs")
-async def labs():
+async def labs(user: dict = Depends(get_current_user)):
     return [f for f in os.listdir("testing/configs") if f.startswith("LR")]
 
 

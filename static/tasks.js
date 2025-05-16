@@ -1,12 +1,27 @@
+import { showNotification } from './notification.js';
+
 // ===== API FUNCTIONS =====
 async function loadTasks() {
     try {
         const rar = document.documentURI;
         let response;
-        if (rar.split("/")[4]) {
-            const userId = encodeURIComponent(rar.split("/")[4]);
-            response = await fetch('/api/tasks?uid=' + userId);
-        } else response = await fetch('/api/tasks');
+        if (rar.split("/")[4]){
+          const userId = encodeURIComponent(rar.split("/")[4]);
+          response = await fetch('/api/tasks?uid=' + userId);
+        }
+        else response = await fetch('/api/tasks');
+
+        if (response.status === 401) {
+            // Обработка unauthorized доступа
+            showNotification('Для просмотра задач необходимо войти в систему', 'error');
+            document.getElementById("loading").textContent = 'Задачи не найдены';
+            // Опционально: перенаправление на страницу входа
+            setTimeout(() => {
+                window.location.href = '/'; // Замените на вашу страницу входа
+            }, 2000);
+
+            return; // Прекращаем выполнение функции
+        }
 
         if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
 
@@ -17,6 +32,9 @@ async function loadTasks() {
         console.error('Ошибка при загрузке задач:', error);
         document.getElementById('loading').textContent =
             'Произошла ошибка при загрузке данных. Пожалуйста, обновите страницу.';
+
+        // Показываем уведомление об общей ошибке
+        showNotification('Не удалось загрузить задачи. Попробуйте позже.', 'error');
     }
 }
 
@@ -24,8 +42,8 @@ async function loadTestCode(file, line) {
     try {
         const response = await fetch('/api/tasks/get_test_block', {
             method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({file, line}),
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ file, line }),
         });
         if (!response.ok) return `Ошибка HTTP: ${response.status}`;
         const data = await response.json();
@@ -35,10 +53,12 @@ async function loadTestCode(file, line) {
     }
 }
 
+
+
 async function parseTestSummary(testResultStr) {
     const response = await fetch('http://127.0.0.1:8000/api/tasks/analyze_tests', {
         method: 'POST',
-        headers: {'Content-Type': 'text/plain'},
+        headers: { 'Content-Type': 'text/plain' },
         body: Array.isArray(testResultStr) ? testResultStr.join('\n') : testResultStr,
     });
     if (!response.ok) throw new Error('Ошибка сервера при анализе тестов.');
@@ -63,11 +83,12 @@ function appendToAiModal(markdownChunk) {
 }
 
 
+
 async function getNeuralVerdict(task_id) {
     try {
         const response = await fetch(`/api/tasks/get_neural_verdict?task_id=${task_id}`, {
             method: 'POST',
-            headers: {'Content-Type': 'application/json'},
+            headers: { 'Content-Type': 'application/json' },
         });
         if (!response.ok) throw new Error(`Ошибка HTTP: ${response.status}`);
 
@@ -83,9 +104,9 @@ async function getNeuralVerdict(task_id) {
         }, 200);
 
         while (true) {
-            const {done, value} = await reader.read();
+            const { done, value } = await reader.read();
             if (done) break;
-            aiModalAccumResult += decoder.decode(value, {stream: true});
+            aiModalAccumResult += decoder.decode(value, { stream: true });
         }
 
         // Последнее обновление
@@ -137,6 +158,7 @@ function openAiModal(initialContent) {
 }
 
 
+
 // ===== RENDERING =====
 function renderTasks(tasksData) {
     const container = document.getElementById('tasks-container');
@@ -158,7 +180,7 @@ function createTaskElement(taskId, taskDescription) {
 
     taskHeader.innerHTML = `
         <div class="task-id"><span class="toggle-icon">▶</span>ID: ${taskId}</div>
-        <div class="task-status status-${taskDescription.status}">${taskDescription.status}</div>
+        <div class="task-status status-${taskDescription.status}">${taskDescription.status.toUpperCase()}</div>
     `;
     taskContainer.appendChild(taskHeader);
 
@@ -166,30 +188,18 @@ function createTaskElement(taskId, taskDescription) {
     if (taskDescription.status !== "processing") {
         const taskContent = document.createElement('div');
         taskContent.className = 'task-content';
-        const contentWrapper = document.createElement('div');
-        contentWrapper.className = 'content-wrapper';
-
-        // Линтер/Ошибки
-
-        if (taskDescription.lint_result) renderLinterResult(taskDescription.lint_result, contentWrapper);
-
-        // Тесты
-        if (taskDescription.test_result) {
-            // Асинхронный парсинг и отрисовка блока тестов
-            parseTestSummary(taskDescription.test_result).then(summary => {
-                renderTestSummaryBlock(taskDescription.test_result, taskId, contentWrapper, taskDescription);
-            });
-        }
 
         // --- Кнопка "Получить вердикт нейросети" ---
+        // Moved outside the content wrapper
         const verdictButton = document.createElement('button');
         verdictButton.className = 'verdict-btn';
         verdictButton.textContent = 'Получить вердикт нейросети';
-        verdictButton.onclick = async () => {
+        verdictButton.onclick = async (e) => {
+            e.stopPropagation(); // Prevent toggle
             verdictButton.disabled = true;
             verdictButton.textContent = 'Загрузка...';
             try {
-                await getNeuralVerdict(taskId); // Ответ отображается через модальное окно
+                await getNeuralVerdict(taskId);
             } catch (error) {
                 console.error('Ошибка получения вердикта:', error);
                 alert('Не удалось получить вердикт нейросети. Попробуйте позже.');
@@ -199,14 +209,31 @@ function createTaskElement(taskId, taskDescription) {
             }
         };
 
-        // Добавляем кнопку и содержимое в контент блока задачи
+        // First add button, then the content wrapper
         taskContent.appendChild(verdictButton);
+
+        // Test results container
+        const contentWrapper = document.createElement('div');
+        contentWrapper.className = 'content-wrapper';
+
+        // Линтер/Ошибки
+        if (taskDescription.lint_result) renderLinterResult(taskDescription.lint_result, contentWrapper);
+
+        // Тесты
+        if (taskDescription.test_result) {
+            parseTestSummary(taskDescription.test_result).then(summary => {
+                renderTestSummaryBlock(taskDescription.test_result, taskId, contentWrapper, taskDescription);
+            });
+        }
+
+        // Add content wrapper after the button
         taskContent.appendChild(contentWrapper);
         taskContainer.appendChild(taskContent);
     }
 
     return taskContainer;
 }
+
 
 // ===== HELPERS =====
 function renderLinterResult(result, wrapper) {
@@ -241,16 +268,9 @@ function renderLinterResult(result, wrapper) {
         diagDiv.className = 'lint-diagnostic improved-diag';
 
         // Цвет и иконка по типу
-        let color = '#c0392b';
-        let icon = '❌';
-        if (diag.Level === 'Warning') {
-            color = '#e67e22';
-            icon = '⚠️';
-        }
-        if (diag.Level === 'Info') {
-            color = '#2980b9';
-            icon = 'ℹ️';
-        }
+        let color = '#c0392b'; let icon = '❌';
+        if (diag.Level === 'Warning') { color = '#e67e22'; icon = '⚠️'; }
+        if (diag.Level === 'Info') { color = '#2980b9'; icon = 'ℹ️'; }
 
         // 1. Основная строка (тип, иконка, имя)
         const title = document.createElement('div');

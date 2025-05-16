@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Красивая страница</title>
+    <title>AutoLab</title>
     <link rel="stylesheet" href="/static/main.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
 </head>
 <body>
 <header>
@@ -12,27 +13,57 @@
         <nav>
             <div class="logo">AutoLab</div>
             <ul class="menu">
-                <li><a href="/tasks">Мои задачи</a></li>
-                <li><a href="/upl_tasks">Загрузить задачу</a></li>
+                <li><a href="/tasks"><i class="fas fa-tasks"></i> Мои задачи</a></li>
+                <li><a href="/upl_tasks"><i class="fas fa-upload"></i> Загрузить задачу</a></li>
             </ul>
-            <button class="auth-btn" id="loginBtn">Войти</button>
-            <button class="auth-btn" id="profileBtn" hidden>Профиль</button>
-            <button class="auth-btn" id="logoutBtn" hidden>Выйти</button>
+            <div class="auth-buttons">
+                <button class="auth-btn" id="loginBtn"><i class="fas fa-sign-in-alt"></i> Войти</button>
+                <button class="auth-btn profile-btn" id="profileBtn" hidden><i class="fas fa-user"></i> Профиль</button>
+                <button class="auth-btn logout-btn" id="logoutBtn" hidden><i class="fas fa-sign-out-alt"></i> Выйти</button>
+            </div>
         </nav>
     </div>
 </header>
 
-<section class="content">
+<section class="hero-section">
     <div class="container">
-        <div class="hero">
+        <div class="hero-content">
             <h1>AutoLab</h1>
+            <p class="hero-text">Инновационная платформа для автоматической проверки и анализа лабораторных работ</p>
+            <div class="hero-buttons">
+                <a href="/tasks" class="hero-btn" id="work-btn">Начать работу</a>
+                <a href="#features" class="hero-btn secondary">Узнать больше</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="features-section" id="features">
+    <div class="container">
+        <h2 class="section-title">Возможности платформы</h2>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-check-circle"></i></div>
+                <h3>Автоматическая проверка</h3>
+                <p>Мгновенная оценка ваших работ с подробными комментариями</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-clock"></i></div>
+                <h3>Экономия времени</h3>
+                <p>Получайте результаты проверки в режиме реального времени</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-chart-line"></i></div>
+                <h3>Детальная аналитика</h3>
+                <p>Отслеживайте свой прогресс и получайте рекомендации</p>
+            </div>
         </div>
     </div>
 </section>
 
 <div class="login-modal" id="loginModal">
     <div class="login-form">
-        <h2 style="margin-bottom: 20px; text-align: center; color: #2c3e50;">Вход в аккаунт</h2>
+        <h2>Вход в аккаунт</h2>
         <form id="authForm">
             <div class="form-group">
                 <label for="username">Имя пользователя или Email</label>
@@ -49,7 +80,16 @@
         </form>
     </div>
 </div>
-<script src="/static/main.js"></script>
+
+<footer>
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-logo">AutoLab</div>
+            <p>&copy; 2025 AutoLab. Все права защищены.</p>
+        </div>
+    </div>
+</footer>
+
+<script type="module" src="/static/main.js"></script>
 </body>
 </html>
-    

@@ -2,63 +2,87 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Список лабораторных работ</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <style>
 
     </style>
-    <link rel="stylesheet" href="/static/admin.css">
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
 <body>
+<header class="header">
+    <h1>AutoLab</h1>
+    <div style="display: flex; gap: 12px;">
+        <button class="header-btn" id="home-btn">
+            <i class="fas fa-home"></i> Главная
+        </button>
+    </div>
+    <link rel="stylesheet" href="/static/admin.css">
+</header>
+
+
 <div class="main-flex-container">
-    <div class="groups-section">
-        <h1>Группы</h1>
-        <div id="groups-list" class="groups-list"></div>
+    <div>
+        <div class="card">
+            <div class="section-title">
+                <i class="fas fa-users"></i>
+                <h2>Группы</h2>
+            </div>
+            <div id="groups-list" class="groups-list"></div>
+        </div>
     </div>
 
-    <div class="container">
-        <h1>Лабораторные работы</h1>
-        <ul id="labs-list"></ul>
+    <div>
+        <div class="card">
+            <div class="section-title">
+                <i class="fas fa-flask"></i>
+                <h2>Лабораторные работы</h2>
+            </div>
+            <ul id="labs-list" style="list-style: none; padding: 0;"></ul>
+        </div>
     </div>
 </div>
-<!-- Модальное окно для редактирования -->
+
 <div id="modal" class="modal">
     <div class="modal-content">
+    <div class="modal-header">
+        <h2 class="modal-title"></h2>
+        <select id="file-select" class="file-select">
+            <option value="gtest">Тесты</option>
+            <option value="clang_tidy">Настройки линтера</option>
+            <option value="interface">Интерфейс</option>
+        </select>
         <span id="close-modal" class="close">&times;</span>
-        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
-            <h2 style="flex:1;">Редактировать файл</h2>
-            <select id="file-select" style="padding: 6px; border-radius: 5px; border: 1px solid #ccc;">
-                <option value="gtest">Тесты</option>
-                <option value="clang_tidy">Настройки линтера</option>
-                <option value="interface">Интерфейс</option>
-            </select>
-        </div>
+    </div>
 
+    <div class="editor-chat-container">
+        <div id="editor" class="editor-container"></div>
 
-        <div style="display: flex; height: 500px; gap: 24px;">
-            <div id="editor" style="width:60%;height:100%;border:1px solid #ccc;border-radius:7px;"></div>
-            <div id="chat-container" style="width:40%;height:100%;display:flex;flex-direction:column;">
-                <div id="chat-history"
-                     style="flex:1;overflow-y:auto;background:#fafbfc;padding:14px;border-radius:7px;margin-bottom:8px;border:1px solid #e1e4e8;height:380px;"></div>
-                <textarea id="chat-input" placeholder="Ваш вопрос..."
-                          style="width:100%;height:60px;padding:10px;border-radius:5px;border:1px solid #ccc;margin-bottom:8px;resize:none;"></textarea>
-                <button id="accept-changes-btn"
-                        style="width:100%;padding:8px 0;margin-bottom:8px;background:#27ae60;color:#fff;border:none;border-radius:7px;cursor:pointer;">
-                    Принять изменения
+        <div id="chat-container" class="chat-container">
+            <div id="chat-history" class="chat-history"></div>
+            <textarea id="chat-input" class="chat-input" placeholder="Ваш вопрос..."></textarea>
+
+            <div class="chat-buttons">
+                <button id="accept-changes-btn" class="btn btn-success btn-block">
+                    <i class="fas fa-check-circle"></i> Принять изменения
                 </button>
-                <button id="chat-send-btn"
-                        style="width:100%;padding:8px 0;background:#2176ae;color:#fff;border:none;border-radius:7px;cursor:pointer;">
-                    Отправить
+                <button id="chat-send-btn" class="btn btn-primary btn-block">
+                    <i class="fas fa-paper-plane"></i> Отправить
                 </button>
-
             </div>
         </div>
-        <button id="save-btn">Сохранить</button>
+    </div>
+
+    <div class="modal-footer">
+        <button id="save-btn" class="btn btn-primary">
+            <i class="fas fa-save"></i> Сохранить
+        </button>
     </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.45.0/min/vs/loader.js"></script>
-
-<script src="/static/admin.js"></script>
+</div>
+<script src = "/static/admin.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.45.0/min/vs/loader.js"></script>
 </body>
 </html>

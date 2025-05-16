@@ -1,3 +1,5 @@
+import {showNotification} from "./notification.js";
+
 document.addEventListener('DOMContentLoaded', () => {
     // Константы
     const API_URL = 'http://127.0.0.1:8000/api';
@@ -47,7 +49,17 @@ document.addEventListener('DOMContentLoaded', () => {
     async function loadLabs() {
         try {
             const response = await fetch(LABS_URL);
-            if (!response.ok) throw new Error('Ошибка загрузки лабораторных');
+            if (response.status === 401) {
+                console.log(response);
+            // Обработка unauthorized доступа
+            showNotification('Для загрузки задач необходимо войти в систему', 'error');
+            // Опционально: перенаправление на страницу входа
+            setTimeout(() => {
+                window.location.href = '/'; // Замените на вашу страницу входа
+            }, 2000);
+
+            return; // Прекращаем выполнение функции
+        }
             const labs = await response.json();
             labSelect.innerHTML = '<option value="" disabled selected>Выберите лабораторную работу</option>';
             labs.forEach(lab => {

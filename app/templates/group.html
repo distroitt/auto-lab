@@ -2,14 +2,31 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
-    <link rel="stylesheet" href="/static/group_students.css"
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Студенты группы</title>
+    <link rel="stylesheet" href="/static/group_students.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
 </head>
 <body>
-<h2>Студенты группы</h2>
-<div id="students-list"></div>
+<!-- Хедер в стиле AutoLab -->
+    <header class="main-header">
+        <div class="header-container">
+            <a href="/" class="logo">AutoLab</a>
+            <nav class="main-nav">
+                <a href="/tasks" class="nav-link">Главная</a>
+            </nav>
+        </div>
+    </header>
+    <div class="container">
+        <h2>Студенты группы</h2>
+        <div id="students-list" class="students-list-container">
+            <div class="loading-indicator">
+                <div class="loading-spinner"></div>
+                <span>Загрузка студентов...</span>
+            </div>
+        </div>
+    </div>
 
-<script src="/static/group_students.js"></script>
+    <script src="/static/group_students.js"></script>
 </body>
-
 </html>

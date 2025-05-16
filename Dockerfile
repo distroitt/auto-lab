@@ -1,7 +1,9 @@
 FROM alpine
 
-RUN apk add --no-cache clang-extra-tools llvm
+WORKDIR /test
 
-WORKDIR /app
+RUN apk add --no-cache git cmake make gcc g++
 
-CMD clang-tidy files/*.cpp --config-file=configs/.clang-tidy --use-color=False --export-fixes=res.yaml
+RUN git clone https://github.com/google/googletest.git
+
+CMD ["sh", "-c", "cmake . . && make && ./test_app --gtest_color=no"]

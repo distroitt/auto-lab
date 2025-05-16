@@ -56,7 +56,7 @@ async def upload_files(interface_name: str, background_tasks: BackgroundTasks, f
         return JSONResponse(content={"task_id": task_id})
 
     except Exception as e:
-        raise HTTPException(status_code=500, detail="Ошибка при загрузке файла")
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 @router.post('/tasks/get_test_block')

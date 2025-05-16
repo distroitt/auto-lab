@@ -1,105 +1,178 @@
 function getGroupIdFromUrl() {
-    // Например, для /group/453503
     const match = window.location.pathname.match(/\/group\/(\d+)/);
     return match ? match[1] : null;
 }
 
-document.addEventListener('DOMContentLoaded', async () => {
-    const groupId = getGroupIdFromUrl();
-    if (!groupId) {
-        document.getElementById('students-list').textContent = 'Группа не найдена!';
-        return;
-    }
+async function fetchWithTimeout(url, options = {}, timeout = 15000) {
+    const controller = new AbortController();
+    const id = setTimeout(() => controller.abort(), timeout);
+
     try {
-        const res = await fetch(`/api/group/${groupId}`);
-        if (!res.ok) throw new Error();
-        const students = await res.json();
-        console.log(students);
-        renderStudents(students);
-    } catch {
-        document.getElementById('students-list').textContent = 'Ошибка загрузки участников группы!';
+        const response = await fetch(url, {
+            ...options,
+            signal: controller.signal
+        });
+        clearTimeout(id);
+        return response;
+    } catch (error) {
+        clearTimeout(id);
+        throw error;
     }
-});
+}
 
-
-function renderStudentsSummary(students) {
+function showError(message) {
     const studentsListDiv = document.getElementById('students-list');
-    studentsListDiv.innerHTML = '';
-    students.forEach(student => {
-        const studentDiv = document.createElement('div');
-        studentDiv.className = 'student-summary';
+    studentsListDiv.innerHTML = `<div class="error-message">${message}</div>`;
+}
 
-        // Краткие посылки с оценками
-        let sumHtml = '';
-        if (student.submits && Object.keys(student.submits).length) {
-            sumHtml = Object.entries(student.submits).map(([submitId, submit]) => `
-                <div style="margin-bottom:4px;">
-                    Посылка <b>${submitId}</b>: 
-                    <span style="color:${submit.status === 'completed' ? 'green' : 'red'}">${submit.status}</span>, 
-                    Оценка: <b>${submit.grade ?? '-'}</b>
-                </div>
-            `).join('');
-        } else {
-            sumHtml = '<em>Посылок нет</em>';
+function showLoading() {
+    const studentsListDiv = document.getElementById('students-list');
+    studentsListDiv.innerHTML = `
+        <div class="loading-indicator">
+            <div class="loading-spinner"></div>
+            <span>Загрузка данных...</span>
+        </div>
+    `;
+}
+
+async function renderStudentSubmits(student, submitsSummaryDiv) {
+    try {
+        const res = await fetchWithTimeout(`/api/tasks?uid=${student.username}`);
+
+        if (!res.ok) {
+            throw new Error(`Ошибка HTTP: ${res.status}`);
         }
 
-        studentDiv.innerHTML = `
-            <div style="display:flex; align-items:center; justify-content: space-between;">
-                <span>${student.surname} ${student.name} (${student.username})</span>
-                <a href="/tasks/${encodeURIComponent(student.username)}" class="btn-details">
-                    Подробнее →
-                </a>
-            </div>
-            <div class="submits-summary" style="margin-top:8px;">${sumHtml}</div>
-        `;
+        const submits = await res.json();
 
-        studentsListDiv.appendChild(studentDiv);
-    });
+        if (!Object.keys(submits).length) {
+            submitsSummaryDiv.innerHTML = '<div class="empty-message">Посылок нет</div>';
+            return;
+        }
+
+        const submitItems = Object.entries(submits).map(([submitId, submit]) => `
+            <div class="submit-item">
+                <div>
+                    <span class="submit-id">${submitId}</span>
+                </div>
+                <div class="submit-info">
+                    <span class="submit-status ${submit.status}">${submit.status === 'completed' ? 'Завершен' : 'Ошибка'}</span>
+                    <span class="submit-grade">Оценка: ${submit.grade ?? '—'}</span>
+                </div>
+            </div>
+        `).join('');
+
+        submitsSummaryDiv.innerHTML = submitItems;
+    } catch (error) {
+        console.error(`Ошибка загрузки посылок для ${student.username}:`, error);
+        submitsSummaryDiv.innerHTML = '<div class="empty-message">Ошибка загрузки посылок</div>';
+    }
 }
 
 async function renderStudents(students) {
     const studentsListDiv = document.getElementById('students-list');
     studentsListDiv.innerHTML = '';
 
+    if (!students.length) {
+        studentsListDiv.innerHTML = '<div class="empty-message">В группе нет студентов</div>';
+        return;
+    }
+
     for (const student of students) {
         const studentDiv = document.createElement('div');
         studentDiv.className = 'student-container';
 
-        // Создаём div для кратких посылок (потом заполним)
         const submitsSummaryDiv = document.createElement('div');
         submitsSummaryDiv.className = 'submits-summary';
-        submitsSummaryDiv.textContent = 'Загрузка посылок...';
+        submitsSummaryDiv.innerHTML = `
+            <div class="loading-indicator" style="padding: 0.5rem">
+                <div class="loading-spinner" style="width: 1.5rem; height: 1.5rem;"></div>
+            </div>
+        `;
 
         studentDiv.innerHTML = `
-            <div class="student-header" style="display:flex;align-items:center;justify-content:space-between;">
-                <span>${student.surname} ${student.name} (${student.username})</span>
-                <a href="/tasks/${encodeURIComponent(student.username)}" class="btn-details">Подробнее →</a>
+            <div class="student-header">
+                <div class="student-name">
+                    ${student.surname} ${student.name}
+                    <span class="student-username">(${student.username})</span>
+                </div>
+                <a href="/tasks/${encodeURIComponent(student.username)}" class="btn-details">Подробнее</a>
             </div>
         `;
 
         studentDiv.appendChild(submitsSummaryDiv);
         studentsListDiv.appendChild(studentDiv);
 
-        // Подгружаем краткие посылки
-        try {
-            const res = await fetch(`/api/tasks?uid=${student.username}`);
-            const submits = await res.json();
-
-            if (!Object.keys(submits).length) {
-                submitsSummaryDiv.textContent = 'Посылок нет.';
-            } else {
-                // Краткий список посылок с оценкой и статусом
-                submitsSummaryDiv.innerHTML = Object.entries(submits).map(([submitId, submit]) => `
-                    <div style="margin-bottom:4px;">
-                        Посылка <b>${submitId}</b>: 
-                        <span style="color:${submit.status === 'completed' ? 'green' : 'red'}">${submit.status}</span>, 
-                        Оценка: <b>${submit.grade ?? '-'}</b>
-                    </div>
-                `).join('');
-            }
-        } catch (e) {
-            submitsSummaryDiv.textContent = 'Ошибка загрузки посылок.';
-        }
+        // Загружаем посылки асинхронно
+        renderStudentSubmits(student, submitsSummaryDiv);
     }
 }
 
+document.addEventListener('DOMContentLoaded', async () => {
+    const groupId = getGroupIdFromUrl();
+
+    if (!groupId) {
+        showError('Идентификатор группы не найден');
+        return;
+    }
+
+    showLoading();
+    try {
+        const res = await fetchWithTimeout(`/api/group/${groupId}`);
+
+        if (!res.ok) {
+            if (res.status === 404) {
+                showError('Группа не найдена');
+            } else {
+                showError(`Ошибка загрузки данных: ${res.status}`);
+            }
+            return;
+        }
+
+        const students = await res.json();
+
+        if (!students || !Array.isArray(students)) {
+            showError('Получены некорректные данные');
+            return;
+        }
+
+        // Сортируем студентов по фамилии
+        students.sort((a, b) => a.surname.localeCompare(b.surname));
+
+        renderStudents(students);
+    } catch (error) {
+        console.error('Ошибка при загрузке студентов:', error);
+
+        if (error.name === 'AbortError') {
+            showError('Превышено время ожидания запроса. Пожалуйста, попробуйте позже.');
+        } else {
+            showError('Произошла ошибка при загрузке данных. Пожалуйста, обновите страницу.');
+        }
+    }
+});
+
+// Добавляем функцию для обработки повторной загрузки
+function reloadData() {
+    const studentsListDiv = document.getElementById('students-list');
+    showLoading();
+
+    // Имитируем перезагрузку страницы с небольшой задержкой
+    setTimeout(() => {
+        window.location.reload();
+    }, 300);
+}
+
+// Вспомогательная функция для форматирования оценок
+function formatGrade(grade) {
+    if (grade === null || grade === undefined) return '—';
+
+    // Преобразуем в число и округляем до 2 знаков после запятой
+    const numGrade = parseFloat(grade);
+    if (isNaN(numGrade)) return grade;
+
+    // Если целое число, возвращаем как есть
+    if (Number.isInteger(numGrade)) return numGrade.toString();
+
+    // Иначе округляем до 2 знаков
+    return numGrade.toFixed(2);
+}

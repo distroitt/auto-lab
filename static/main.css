@@ -2,23 +2,28 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Arial', sans-serif;
+    font-family: 'Segoe UI', 'Arial', sans-serif;
 }
 
 body {
-    background-color: #f5f5f5;
+    background: #f5f6fa;
 }
 
 .container {
     width: 100%;
     max-width: 1200px;
     margin: 0 auto;
+    padding: 0 20px;
 }
 
+/* HEADER */
 header {
-    background-color: #2c3e50;
-    padding: 20px 0;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+    padding: 15px 0;
+    box-shadow: 0 3px 20px rgba(0, 0, 0, 0.05);
+    position: sticky;
+    top: 0;
+    z-index: 100;
 }
 
 nav {
@@ -28,67 +33,212 @@ nav {
 }
 
 .logo {
-    color: #fff;
-    font-size: 24px;
+    color: #2176ae;
+    font-size: 28px;
     font-weight: bold;
+    letter-spacing: 0.5px;
 }
 
 .menu {
     display: flex;
     list-style: none;
-}
-
-.menu li {
-    margin-left: 30px;
+    gap: 30px;
 }
 
 .menu li a {
-    color: #fff;
+    color: #2e3856;
     text-decoration: none;
     font-size: 16px;
+    font-weight: 500;
     transition: color 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
 .menu li a:hover {
-    color: #3498db;
+    color: #2176ae;
+}
+
+.menu li a i {
+    font-size: 15px;
+}
+
+.auth-buttons {
+    display: flex;
+    gap: 12px;
 }
 
 .auth-btn {
-    background-color: #3498db;
+    background-color: #2176ae;
     color: white;
     border: none;
     padding: 10px 20px;
-    border-radius: 5px;
+    border-radius: 6px;
     cursor: pointer;
-    transition: background-color 0.3s;
+    transition: all 0.3s;
+    font-size: 15px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
 .auth-btn:hover {
-    background-color: #2980b9;
+    background-color: #145075;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(33, 118, 174, 0.2);
 }
 
-.content {
-    padding: 50px 0;
+.auth-btn i {
+    font-size: 14px;
 }
 
-.hero {
-    text-align: center;
-    margin-bottom: 50px;
+.profile-btn {
+    background-color: #eef2f7;
+    color: #2e3856;
 }
 
-.hero h1 {
-    font-size: 42px;
-    margin-bottom: 20px;
-    color: #2c3e50;
+.profile-btn:hover {
+    background-color: #dbeaf7;
+    color: #145075;
 }
 
-.hero p {
-    font-size: 18px;
-    color: #7f8c8d;
-    max-width: 700px;
+.logout-btn {
+    background-color: #ff6b6b;
+}
+
+.logout-btn:hover {
+    background-color: #ee5253;
+}
+
+/* HERO SECTION */
+.hero-section {
+    padding: 100px 0;
+    background: linear-gradient(135deg, #fff 0%, #eef2f7 100%);
+}
+
+.hero-content {
+    max-width: 800px;
     margin: 0 auto;
+    text-align: center;
 }
 
+.hero-content h1 {
+    font-size: 60px;
+    font-weight: 700;
+    color: #2176ae;
+    margin-bottom: 20px;
+    animation: fadeIn 1s ease-out;
+}
+
+.hero-text {
+    font-size: 20px;
+    color: #2e3856;
+    margin-bottom: 40px;
+    line-height: 1.6;
+    animation: fadeIn 1s ease-out 0.3s forwards;
+    opacity: 0;
+}
+
+.hero-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    animation: fadeIn 1s ease-out 0.6s forwards;
+    opacity: 0;
+}
+
+.hero-btn {
+    padding: 14px 32px;
+    background: #2176ae;
+    color: white;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 16px;
+    transition: all 0.3s;
+    display: inline-block;
+}
+
+.hero-btn:hover {
+    background: #145075;
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(33, 118, 174, 0.3);
+}
+
+.hero-btn.secondary {
+    background: transparent;
+    color: #2176ae;
+    border: 2px solid #2176ae;
+}
+
+.hero-btn.secondary:hover {
+    background: rgba(33, 118, 174, 0.1);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(33, 118, 174, 0.15);
+}
+
+/* FEATURES SECTION */
+.features-section {
+    padding: 80px 0;
+    background: #fff;
+}
+
+.section-title {
+    text-align: center;
+    font-size: 36px;
+    color: #2176ae;
+    margin-bottom: 60px;
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+}
+
+.feature-card {
+    background: #eef2f7;
+    border-radius: 8px;
+    padding: 30px;
+    text-align: center;
+    transition: all 0.3s;
+}
+
+.feature-card:hover {
+    background: #dbeaf7;
+    transform: translateY(-5px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+}
+
+.feature-icon {
+    font-size: 44px;
+    color: #2176ae;
+    margin-bottom: 20px;
+}
+
+.feature-icon i {
+    display: inline-block;
+    transition: transform 0.3s;
+}
+
+.feature-card:hover .feature-icon i {
+    transform: scale(1.2);
+}
+
+.feature-card h3 {
+    font-size: 20px;
+    color: #2e3856;
+    margin-bottom: 15px;
+}
+
+.feature-card p {
+    color: #2e3856;
+    line-height: 1.6;
+}
+
+/* LOGIN MODAL */
 .login-modal {
     display: none;
     position: fixed;
@@ -99,75 +249,222 @@ nav {
     background-color: rgba(0, 0, 0, 0.5);
     align-items: center;
     justify-content: center;
+    z-index: 1000;
+    animation: fadeIn 0.3s ease-out;
 }
 
 .login-form {
     background-color: white;
-    padding: 30px;
+    padding: 40px;
     border-radius: 10px;
     width: 100%;
     max-width: 400px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+    animation: slideUp 0.4s ease-out;
+}
+
+.login-form h2 {
+    margin-bottom: 30px;
+    text-align: center;
+    color: #2176ae;
+    font-size: 24px;
 }
 
 .form-group {
-    margin-bottom: 20px;
+    margin-bottom: 25px;
 }
 
 .form-group label {
     display: block;
-    margin-bottom: 8px;
-    font-weight: bold;
-    color: #2c3e50;
+    margin-bottom: 10px;
+    font-weight: 500;
+    color: #2e3856;
 }
 
 .form-group input {
     width: 100%;
-    padding: 12px;
+    padding: 12px 15px;
     border: 1px solid #ddd;
-    border-radius: 5px;
+    border-radius: 6px;
     font-size: 16px;
+    transition: all 0.3s;
+}
+
+.form-group input:focus {
+    border-color: #2176ae;
+    box-shadow: 0 0 0 3px rgba(33, 118, 174, 0.2);
+    outline: none;
 }
 
 .form-actions {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    margin-top: 30px;
 }
 
 .login-submit {
-    background-color: #2ecc71;
+    background-color: #2176ae;
     color: white;
     border: none;
     padding: 12px 24px;
-    border-radius: 5px;
+    border-radius: 6px;
     cursor: pointer;
     font-size: 16px;
-    transition: background-color 0.3s;
+    font-weight: 500;
+    transition: all 0.3s;
 }
 
 .login-submit:hover {
-    background-color: #27ae60;
+    background-color: #145075;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(33, 118, 174, 0.2);
 }
 
 .close-btn {
-    background-color: #e74c3c;
+    background-color: #ff6b6b;
     color: white;
     border: none;
     padding: 12px 24px;
-    border-radius: 5px;
+    border-radius: 6px;
     cursor: pointer;
     font-size: 16px;
-    transition: background-color 0.3s;
+    font-weight: 500;
+    transition: all 0.3s;
 }
 
 .close-btn:hover {
-    background-color: #c0392b;
+    background-color: #ee5253;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(238, 82, 83, 0.2);
 }
 
+/* FOOTER */
 footer {
-    background-color: #2c3e50;
+    background-color: #2e3856;
     color: #ecf0f1;
-    padding: 30px 0;
-    text-align: center;
+    padding: 40px 0;
+    margin-top: 80px;
+}
+
+.footer-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+
+.footer-logo {
+    font-size: 28px;
+    font-weight: bold;
+    color: #fff;
+}
+
+/* ANIMATIONS */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+/* Продолжение предыдущего CSS */
+@media (max-width: 768px) {
+    .menu {
+        display: none;
+    }
+
+    .hero-content h1 {
+        font-size: 40px;
+    }
+
+    .hero-text {
+        font-size: 18px;
+    }
+
+    .hero-buttons {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .features-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .nav {
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .auth-buttons {
+        flex-direction: column;
+        width: 100%;
+        align-items: center;
+    }
+
+    .auth-btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .login-form {
+        width: 90%;
+        margin: 0 5%;
+        padding: 20px;
+    }
+}
+/* Стили для уведомлений */
+.notification {
+    position: fixed;
+    bottom: 20px; /* Изменено с top на bottom */
+    right: 20px;
+    padding: 15px 25px;
+    border-radius: 8px;
+    color: white;
+    opacity: 0;
+    transform: translateY(20px); /* Изменено для появления снизу */
+    transition: all 0.3s ease;
+    z-index: 1000;
+    max-width: 300px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.notification.notification-success {
+    background-color: #2ecc71;
+}
+
+.notification.notification-error {
+    background-color: #e74c3c;
+}
+
+.notification.notification-info {
+    background-color: #3498db;
+}
+
+.notification.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Для адаптивности на мобильных устройствах */
+@media (max-width: 768px) {
+    .notification {
+        left: 20px;
+        right: 20px;
+        max-width: none;
+        text-align: center;
+    }
 }

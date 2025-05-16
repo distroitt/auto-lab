@@ -6,40 +6,52 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Результаты проверки кода</title>
+    <title>Результаты проверки кода | AutoLab</title>
     <link rel="stylesheet" href="/static/tasks.css">
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github-dark.min.css">
     <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
     <script>
-        marked.setOptions({
-            highlight: function (code, lang) {
-                return hljs.highlightAuto(code, [lang]).value;
-            }
-        });
+       marked.setOptions({
+         highlight: function (code, lang) {
+           return hljs.highlightAuto(code, [lang]).value;
+         }
+       });
     </script>
 </head>
 
 <body>
+    <!-- Шапка в стиле основного сайта -->
+    <header class="main-header">
+        <div class="container header-container">
+            <a href="/" class="logo">AutoLab</a>
+            <nav class="main-nav">
+                <a href="/" class="nav-link"><i class="fa fa-home"></i> Главная</a>
+            </nav>
+        </div>
+    </header>
 
-<div id="loading">Загрузка результатов...</div>
+    <main class="main-content">
+        <div class="container">
+            <h1 class="page-title">Результаты проверки кода</h1>
 
-<div id="tasks-container">
+            <div id="loading">Загрузка результатов...</div>
 
-</div>
-<div id="ai-modal"
-     style="display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.7); justify-content: center; align-items: center;">
-    <div style="background: white; padding: 20px; border-radius: 5px; max-width: 600px; width: 100%; position: relative;">
-        <button class="close-btn"
-                style="position: absolute; top: 10px; right: 10px; background: none; border: none; font-size: 20px;">
-            &times;
-        </button>
-        <div id="ai-modal-body" style="max-height: 400px; overflow-y: auto;"></div>
+            <div id="tasks-container">
+                <!-- Сюда будут добавлены задачи через JavaScript -->
+            </div>
+        </div>
+    </main>
+
+    <!-- Модальное окно для AI-вердикта -->
+    <div id="ai-modal" class="modal">
+        <div class="modal-content">
+            <button class="close-btn">&times;</button>
+            <div id="ai-modal-body"></div>
+        </div>
     </div>
-</div>
 
-
-<script src="/static/tasks.js"></script>
+    <script type="module" src="/static/tasks.js"></script>
 </body>
 
 </html>

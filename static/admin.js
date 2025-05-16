@@ -31,7 +31,7 @@ let aiMessages = [];
         labsData = await res.json();
         renderLabsList();
     } catch {
-        alert('Ошибка при загрузке списка лабораторных!');
+        showNotification('Ошибка при загрузке списка лабораторных!', 'error');
     }
 })();
 
@@ -45,14 +45,13 @@ async function getInterfaceContent(labNum) {
     }
 }
 
-
 // Рендерит список лабораторных
 function renderLabsList() {
     labsList.innerHTML = '';
     labsData.forEach((name, idx) => {
         const li = document.createElement('li');
-        li.textContent = name;
-        li.style.cursor = 'pointer';
+        li.className = 'list-item';
+        li.innerHTML = `<i class="fas fa-vial"></i>${name}`;
         li.addEventListener('click', () => openModal(idx, name));
         labsList.appendChild(li);
     });
@@ -64,9 +63,10 @@ let currentFileKey = 'gtest'; // по умолчанию
 // Открыть модальное окно и загрузить файл
 async function openModal(idx, name) {
     const match = name.match(/\d+/);
-    if (!match) return alert('Не удалось определить номер лабораторной!');
+    if (!match) return showNotification('Не удалось определить номер лабораторной!', 'error');
     currentLabNum = match[0];
     modal.style.display = 'block';
+    document.querySelector('.modal-title').textContent = `Редактирование: ${name}`;
 
     currentFileKey = fileSelect.value || 'gtest';
     await loadFileContent(currentLabNum, currentFileKey);
@@ -95,12 +95,15 @@ async function loadFileContent(labNum, fileKey) {
         const defaultText = '// Не удалось загрузить файл. Начните редактирование с пустого файла.';
         if (editor) editor.setValue(defaultText);
         else loadMonacoEditor(defaultText);
-        alert('Не удалось загрузить файл ' + fileKey);
+        showNotification('Не удалось загрузить файл ' + fileKey, 'error');
     }
 }
 
 // Инициализация Monaco Editor
+// Инициализация Monaco Editor
 function loadMonacoEditor(initialValue) {
+    console.log(currentLabNum);
+    //document.getElementById("lab_name").innerHTML += `${currentLabNum}`;
     require.config({paths: {vs: 'https://cdn.jsdelivr.net/npm/monaco-editor@0.45.0/min/vs'}});
     require(['vs/editor/editor.main'], () => {
         editor = monaco.editor.create(document.getElementById(editorContainerId), {
@@ -108,9 +111,14 @@ function loadMonacoEditor(initialValue) {
             language: 'cpp',
             theme: 'vs-dark',
             automaticLayout: true,
-            fontSize: 11,
-            minimap: {enabled: false},
+            fontSize: 11, // Уменьшаем размер шрифта
+            lineHeight: 16, // Уменьшаем высоту строки
+            minimap: {enabled: false}, // Отключаем мини-карту для экономии места
             scrollBeyondLastLine: false,
+            folding: true, // Включаем сворачивание блоков кода
+            lineNumbers: 'on',
+            glyphMargin: false, // Отключаем отступ для значков
+            contextmenu: true
         });
     });
 }
@@ -121,20 +129,27 @@ closeModal.addEventListener('click', () => {
     aiMessages = [];
     chatHistory.innerHTML = '';
 });
+
 window.addEventListener('click', e => {
-    if (e.target === modal) modal.style.display = 'none';
+    if (e.target === modal) {
+        modal.style.animation = 'fadeOut 0.3s';
+        setTimeout(() => {
+            modal.style.display = 'none';
+            modal.style.animation = '';
+        }, 300);
+    }
 });
 
-// Кнопка “Принять изменения” из AI
+// Кнопка "Принять изменения" из AI
 acceptChangesBtn.addEventListener('click', () => {
-    if (!editor) return alert('Редактор не инициализирован!');
+    if (!editor) return showNotification('Редактор не инициализирован!', 'error');
 
     const lastAiMessage = [...chatHistory.querySelectorAll('.ai-message')].pop();
-    if (!lastAiMessage) return alert('Нет сообщений от нейросети для принятия.');
-    if (lastAiMessage.dataset.accepted === 'true') return alert('Изменения из этого сообщения уже были приняты.');
+    if (!lastAiMessage) return showNotification('Нет сообщений от нейросети для принятия', 'error');
+    if (lastAiMessage.dataset.accepted === 'true') return showNotification('Изменения из этого сообщения уже были приняты', 'info');
 
     const codeBlocks = lastAiMessage.querySelectorAll('pre code');
-    if (!codeBlocks.length) return alert('В последнем ответе нейросети нет кода для добавления.');
+    if (!codeBlocks.length) return showNotification('В последнем ответе нейросети нет кода для добавления', 'info');
 
     let currentValue = editor.getValue();
     codeBlocks.forEach(codeBlock => {
@@ -146,14 +161,12 @@ acceptChangesBtn.addEventListener('click', () => {
 
     editor.setValue(currentValue);
     lastAiMessage.dataset.accepted = 'true';
-    alert('Код из ответа нейросети добавлен в конец редактора.');
-    saveEditorContent();
+    showNotification('Код из ответа нейросети добавлен в конец редактора', 'success');
 });
-
 
 // Сохраняет содержимое редактора
 function saveEditorContent() {
-    if (!editor) return alert('Редактор не инициализирован!');
+    if (!editor) return showNotification('Редактор не инициализирован!', 'error');
 
     const content = editor.getValue();
 
@@ -161,7 +174,6 @@ function saveEditorContent() {
     if (currentFileKey === 'clang_tidy') {
         url = filesForLab['clang_tidy']();
     } else {
-
         url = filesForLab[fileSelect.value](currentLabNum);
     }
 
@@ -171,7 +183,7 @@ function saveEditorContent() {
         body: content,
     }).then(async res => {
         if (res.ok) {
-            alert('Файл успешно сохранён!');
+            showNotification('Файл успешно сохранён!', 'success');
             prevContent = content;
         } else {
             let errorMessage = 'Неизвестная ошибка';
@@ -185,12 +197,12 @@ function saveEditorContent() {
                 }
             }
             editor.setValue(prevContent);
-            alert('Ошибка при сохранении файла: ' + errorMessage);
+            showNotification('Ошибка при сохранении файла: ' + errorMessage, 'error');
         }
     })
         .catch(() => {
             editor.setValue(prevContent);
-            alert('Ошибка при отправке запроса на сохранение!');
+            showNotification('Ошибка при отправке запроса на сохранение!', 'error');
         });
 }
 
@@ -199,7 +211,13 @@ saveBtn.addEventListener('click', saveEditorContent);
 function appendMessage(role, text) {
     const div = document.createElement('div');
     div.className = role === 'user' ? 'user-message' : 'ai-message';
-    div.textContent = text;
+
+    if (role === 'user') {
+        div.textContent = text;
+    } else {
+        div.innerHTML = marked.parse(text);
+    }
+
     chatHistory.appendChild(div);
     chatHistory.scrollTop = chatHistory.scrollHeight;
     return div;
@@ -213,9 +231,10 @@ chatSendBtn.addEventListener('click', async () => {
     chatInput.value = '';
     chatInput.disabled = true;
     chatSendBtn.disabled = true;
+    chatSendBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Отправка...';
 
     async function sendRequest() {
-        const aiDiv = appendMessage('ai', '');
+        const aiDiv = appendMessage('ai', '<i class="fas fa-spinner fa-spin"></i> Генерация ответа...');
 
         // Для первой отправки контекста истории, если пусто — заполняем служебными сообщениями
         if (aiMessages.length === 0) {
@@ -270,7 +289,7 @@ chatSendBtn.addEventListener('click', async () => {
             });
 
             if (!response.body) {
-                aiDiv.textContent = 'Ошибка: поток недоступен!';
+                aiDiv.innerHTML = 'Ошибка: поток недоступен!';
                 return resetControls();
             }
 
@@ -285,7 +304,7 @@ chatSendBtn.addEventListener('click', async () => {
 
                 // Проверка на повторную авторизацию
                 if (aiText.includes('[REAUTH_REQUIRED]')) {
-                    aiDiv.textContent = 'Требуется повторная авторизация...';
+                    aiDiv.innerHTML = '<i class="fas fa-key"></i> Требуется повторная авторизация...';
                     reader.cancel();
 
                     await showReauthModal();
@@ -308,7 +327,7 @@ chatSendBtn.addEventListener('click', async () => {
             });
 
         } catch {
-            aiDiv.textContent = 'Ошибка связи с ИИ!';
+            aiDiv.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Ошибка связи с ИИ!';
         } finally {
             resetControls();
         }
@@ -317,11 +336,11 @@ chatSendBtn.addEventListener('click', async () => {
     function resetControls() {
         chatInput.disabled = false;
         chatSendBtn.disabled = false;
+        chatSendBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Отправить';
     }
 
     await sendRequest();
 });
-
 
 // ENTER для отправки (с Shift+Enter — новая строка)
 chatInput.addEventListener('keydown', e => {
@@ -351,11 +370,14 @@ async function showReauthModal() {
                 alignItems: 'center',
             });
             authModal.innerHTML = `
-                <div style="background:white; padding:20px; border-radius:8px; max-width:400px; width:90%;">
-                    <p>Введите код подтверждения из почты:</p>
-                    <input id="reauth-code-input" type="text" style="width:100%; padding:8px; margin-bottom:10px;" />
-                    <button id="reauth-submit-btn" style="padding:8px 16px;">Отправить</button>
-                </div>`;
+                        <div style="background:white; padding:25px; border-radius:8px; max-width:400px; width:90%; box-shadow: 0 5px 25px rgba(0,0,0,0.2);">
+                            <h3 style="margin-top:0; color:var(--primary-color); margin-bottom:15px;">Авторизация</h3>
+                            <p style="margin-bottom:15px;">Введите код подтверждения из почты:</p>
+                            <input id="reauth-code-input" type="text" style="width:100%; padding:10px; margin-bottom:15px; border-radius:5px; border:1px solid #ddd;" />
+                            <button id="reauth-submit-btn" style="padding:10px 16px; background:var(--primary-color); color:white; border:none; border-radius:5px; cursor:pointer; width:100%;">
+                                <i class="fas fa-key"></i> Отправить
+                            </button>
+                        </div>`;
             document.body.appendChild(authModal);
         }
         authModal.style.display = 'flex';
@@ -365,8 +387,9 @@ async function showReauthModal() {
 
         btn.onclick = async () => {
             const code = input.value.trim();
-            if (!code) return alert('Пожалуйста, введите код');
+            if (!code) return showNotification('Пожалуйста, введите код', 'error');
             btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Обработка...';
 
             try {
                 const resp = await fetch('provide-code', {
@@ -376,22 +399,23 @@ async function showReauthModal() {
                 });
                 if (resp.ok) {
                     authModal.style.display = 'none';
+                    showNotification('Авторизация успешна', 'success');
                     resolve(true);
                 } else {
-                    alert('Ошибка отправки кода');
+                    showNotification('Ошибка отправки кода', 'error');
                     btn.disabled = false;
+                    btn.innerHTML = '<i class="fas fa-key"></i> Отправить';
                 }
             } catch {
-                alert('Ошибка соединения с сервером');
+                showNotification('Ошибка соединения с сервером', 'error');
                 btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-key"></i> Отправить';
             }
         };
     });
 }
 
-
 // ===== Группы =====
-
 const groupsListDiv = document.getElementById('groups-list');
 
 // Получить и отобразить группы
@@ -402,7 +426,7 @@ async function fetchAndRenderGroups() {
         const groups = await res.json();
         renderGroups(groups);
     } catch {
-        groupsListDiv.innerHTML = '<div style="color:#d9534f;text-align:center;">Ошибка при загрузке списка групп!</div>';
+        groupsListDiv.innerHTML = '<div style="color:#d9534f;text-align:center;padding:15px;"><i class="fas fa-exclamation-circle"></i> Ошибка при загрузке списка групп!</div>';
     }
 }
 
@@ -410,16 +434,96 @@ function renderGroups(groups) {
     groupsListDiv.innerHTML = '';
     groups.forEach(group => {
         const div = document.createElement('div');
-        div.className = 'groups-tile';
-        div.textContent = group;
+        div.className = 'list-item';
+        div.innerHTML = `<i class="fas fa-users"></i>${group}`;
         div.addEventListener('click', () => {
-            // Здесь переход на страницу группы. Можно window.location, либо SPA
             window.location.href = `/group/${encodeURIComponent(group)}`;
-            // или сделайте SPA и откройте соответствующий div
         });
         groupsListDiv.appendChild(div);
     });
 }
 
-// Вызвать при старте
+// Функция для показа уведомлений, обновленная версия
+function showNotification(message, type = 'info') {
+    // Сначала удаляем все существующие уведомления
+    const existingNotifications = document.querySelectorAll('.notification');
+    existingNotifications.forEach(notification => {
+        notification.classList.remove('show');
+        setTimeout(() => {
+            if (document.body.contains(notification)) {
+                document.body.removeChild(notification);
+            }
+        }, 300);
+    });
+
+    // Создаем новое уведомление
+    const notification = document.createElement('div');
+    notification.classList.add('notification', `notification-${type}`);
+
+    // Добавляем иконку в зависимости от типа
+    let icon = '';
+    if (type === 'success') {
+        icon = '<i class="fas fa-check-circle"></i>';
+    } else if (type === 'error') {
+        icon = '<i class="fas fa-exclamation-circle"></i>';
+    } else {
+        icon = '<i class="fas fa-info-circle"></i>';
+    }
+
+    // Добавляем кнопку закрытия
+    notification.innerHTML = `
+                ${icon}
+                <span>${message}</span>
+                <span class="notification-close">&times;</span>
+            `;
+
+    document.body.appendChild(notification);
+
+    // Находим кнопку закрытия и добавляем событие
+    const closeButton = notification.querySelector('.notification-close');
+    closeButton.addEventListener('click', () => {
+        notification.classList.remove('show');
+        setTimeout(() => {
+            if (document.body.contains(notification)) {
+                document.body.removeChild(notification);
+            }
+        }, 300);
+    });
+
+    // Показываем уведомление после небольшой задержки
+    setTimeout(() => {
+        notification.classList.add('show');
+    }, 10);
+
+    // Автоматически скрываем уведомление через 5 секунд
+    setTimeout(() => {
+        if (document.body.contains(notification)) {
+            notification.classList.remove('show');
+            setTimeout(() => {
+                if (document.body.contains(notification)) {
+                    document.body.removeChild(notification);
+                }
+            }, 300);
+        }
+    }, 5000);
+}
+
+// Добавляем анимацию для модального окна
+document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && modal.style.display === 'block') {
+        modal.style.animation = 'fadeOut 0.3s';
+        setTimeout(() => {
+            modal.style.display = 'none';
+            modal.style.animation = '';
+        }, 300);
+    }
+});
+// Добавьте эти строки в основной JavaScript код
+
+// Обработка нажатий на кнопки в шапке
+document.getElementById('home-btn').addEventListener('click', function() {
+    window.location.href = '/'; // Перенаправление на главную страницу
+});
+
+// Вызвать инициализацию при загрузке
 fetchAndRenderGroups();
