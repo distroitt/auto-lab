@@ -1,0 +1,327 @@
+/* CSS остается без изменений */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    margin: 0;
+    padding: 20px;
+    background-color: #f5f5f5;
+    color: #333;
+}
+
+.task-container {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 30px;
+    padding: 20px;
+    border-left: 5px solid #3498db;
+}
+
+.task-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+    cursor: pointer;
+}
+
+.task-id {
+    font-weight: bold;
+    color: #3498db;
+    font-family: monospace;
+    font-size: 1.1em;
+}
+
+.task-status {
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.9em;
+    font-weight: bold;
+}
+
+.status-completed {
+    background-color: #2ecc71;
+    color: white;
+}
+
+.status-processing {
+    background-color: #f39c12;
+    color: white;
+}
+
+.status-failed {
+    background-color: #e74c3c;
+    color: white;
+}
+
+.task-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-out;
+}
+
+.task-content.show {
+    max-height: 10000px;
+    transition: max-height 1s ease-in;
+}
+
+.error-summary {
+    font-weight: bold;
+    font-size: 1.1em;
+    margin: 15px 0 10px 0;
+    color: #2c3e50;
+}
+
+.error-group {
+    margin-bottom: 20px;
+    border-left: 4px solid #e74c3c;
+    background-color: #f8f9fa;
+    padding: 10px 15px;
+    border-radius: 5px;
+}
+
+.error-type {
+    font-weight: bold;
+    margin-bottom: 10px;
+    padding-bottom: 5px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.error-item {
+    margin: 8px 0;
+    padding: 10px;
+    background-color: #fff;
+    border-radius: 4px;
+    border: 1px solid #e0e0e0;
+}
+
+.file-name {
+    color: #2980b9;
+    font-weight: bold;
+}
+
+.line-number {
+    color: #e74c3c;
+    font-weight: bold;
+}
+
+.error-description {
+    margin-top: 3px;
+}
+
+.circle-icon {
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background-color: #e74c3c;
+    margin-right: 8px;
+    vertical-align: middle;
+}
+
+.toggle-icon {
+    margin-right: 10px;
+    transition: transform 0.3s;
+    display: inline-block;
+}
+
+.rotate {
+    transform: rotate(90deg);
+}
+
+/* Модальное окно */
+.modal {
+    display: none; /* Скрыто по умолчанию */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Полупрозрачный фон */
+    z-index: 9999;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Контейнер содержимого */
+.modal-content {
+    background-color: white;
+    max-width: 80%; /* Ограничиваем ширину */
+    width: 600px; /* Основная ширина */
+    max-height: 90%; /* Ограничиваем высоту */
+    overflow-y: auto; /* Добавляем прокрутку */
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    font-family: Arial, sans-serif;
+    animation: modalFade 0.3s ease-out;
+}
+
+/* Кнопка закрытия */
+.close-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #888;
+}
+
+.close-btn:hover {
+    color: #333;
+}
+
+/* Стили текста */
+.modal-content pre {
+    background: #f4f4f4;
+    padding: 10px;
+    margin-top: 10px;
+    border-radius: 4px;
+    overflow-x: auto; /* Прокрутка для длинных строк кода */
+    font-size: 0.95rem;
+    font-family: 'Courier New', monospace;
+}
+
+.modal-content code {
+    background: #f4f4f4;
+    padding: 3px 5px;
+    border-radius: 4px;
+    font-family: 'Courier New', monospace;
+}
+
+#ai-modal-body pre {
+    background: #282c34;
+    color: #f8f8f2;
+    border-radius: 8px;
+    padding: 12px;
+    overflow-x: auto;
+    margin-bottom: 10px;
+    font-size: 15px;
+    max-width: 100%;
+}
+
+
+/* Многострочный код: управляет только цветом текста, фон выше */
+#ai-modal-body pre code {
+    background: none;
+    color: inherit;
+    font-family: "Fira Mono", "Consolas", "Monaco", monospace;
+}
+
+
+#ai-modal-body :not(pre) > code {
+    background: #eef2f7;
+    color: #1a1a1a;
+    border-radius: 4px;
+    padding: 2px 5px;
+    font-family: "Fira Mono", "Consolas", "Monaco", monospace;
+    font-size: 95%;
+    /* можно добавить свойство, чтобы выглядело аккуратнее: */
+    word-break: break-word;
+}
+
+.lint-header {
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.lint-diagnostic {
+    border: 1px solid #ccc;
+    padding: 8px;
+    margin-bottom: 6px;
+    border-radius: 4px;
+    background-color: #f9f9f9;
+}
+
+.lint-title {
+    font-weight: 600;
+    margin-bottom: 4px;
+    color: #c0392b; /* красный для ошибок/предупреждений */
+}
+
+.lint-message {
+    margin-bottom: 4px;
+}
+
+
+.lint-filepath {
+    font-style: italic;
+    color: #555;
+    margin-bottom: 4px;
+}
+
+.lint-notes ul {
+    margin: 4px 0 0 20px;
+    padding: 0;
+    list-style-type: disc;
+}
+
+.lint-diagnostic.improved-diag {
+    border-left: 5px solid #e67e22;
+    box-shadow: 0 1px 8px rgba(46, 204, 113, 0.04);
+    margin-bottom: 18px;
+    background: #fff9ea;
+}
+
+.lint-diagnostic.improved-diag .lint-title {
+    font-size: 1.08em;
+}
+
+.lint-diagnostic.improved-diag .lint-filepath {
+    font-size: 0.98em;
+    margin-bottom: 2px;
+    margin-top: 6px;
+}
+
+.lint-notes {
+    margin-left: 9px;
+    margin-bottom: 2px;
+}
+
+
+#ai-modal-body code {
+    color: #f8f8f2; /* тот же светлый, но не белый */
+    background: none;
+    font-family: "Fira Mono", "Consolas", "Monaco", monospace;
+}
+
+
+/* Для многострочного кода не добавляем лишних отступов */
+#ai-modal-body pre {
+    padding: 12px;
+    border-radius: 8px;
+    background: #282c34;
+    color: #fff;
+    margin-bottom: 10px;
+}
+
+/* Анимация появления модального окна */
+@keyframes modalFade {
+    from {
+        opacity: 0;
+        transform: translateY(-50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+.task-content > * {
+    margin-top: 10px;
+}
+
+.task-content.show {
+    padding-top: 10px;
+}
+
+/* Добавим стиль для индикатора загрузки */
+#loading {
+    text-align: center;
+    padding: 20px;
+    font-size: 1.2em;
+    color: #3498db;
+}

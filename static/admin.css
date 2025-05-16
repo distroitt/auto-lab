@@ -1,0 +1,234 @@
+body {
+    font-family: Arial, sans-serif;
+    background: #f5f6fa;
+    margin: 0;
+}
+
+.container {
+    max-width: 600px;
+    margin: 40px auto;
+    background: #fff;
+    border-radius: 8px;
+    padding: 30px 40px;
+    box-shadow: 0 3px 20px rgba(0, 0, 0, 0.05);
+}
+
+h1 {
+    text-align: center;
+    color: #2176ae;
+}
+
+#labs-list {
+    list-style: none;
+    padding: 0;
+}
+
+#labs-list li {
+    padding: 18px 16px;
+    background: #eef2f7;
+    border-radius: 6px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+#labs-list li:hover {
+    background: #dbeaf7;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 10;
+    left: 0;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.35);
+}
+
+.modal-content {
+    background-color: #fff;
+    padding: 25px 20px;
+    border-radius: 9px;
+    width: 900px;
+    height: 600px;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 2px 12px rgba(41, 118, 174, 0.08);
+}
+
+
+.close {
+    position: absolute;
+    top: 12px;
+    right: 18px;
+    color: #2e3856;
+    font-size: 28px;
+    cursor: pointer;
+}
+
+#edit-content {
+    width: 95%;
+    height: 100px;
+    margin-top: 15px;
+    border-radius: 7px;
+    border: 1px solid #ccc;
+    padding: 10px;
+}
+
+#save-btn {
+    margin-top: 14px;
+    padding: 7px 20px;
+    border: none;
+    border-radius: 7px;
+    background: #2176ae;
+    color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+#save-btn:hover {
+    background: #145075;
+}
+
+#chat-container {
+    font-size: 15px;
+}
+
+/* Блоки кода (многострочные, через ``` в markdown) */
+#chat-container pre {
+    background: #282c34;
+    color: #f8f8f2;
+    border-radius: 8px;
+    padding: 12px;
+    overflow-x: auto;
+    margin-bottom: 10px;
+    font-size: 15px;
+    max-width: 100%;
+}
+
+/* Многострочный код: управляет только цветом текста, фон выше */
+#chat-container pre code {
+    background: none;
+    color: inherit;
+    font-family: "Fira Mono", "Consolas", "Monaco", monospace;
+}
+
+/* Инлайн-код! НЕ внутри блока pre  (например: `#include`) */
+#chat-container :not(pre) > code {
+    background: #eef2f7;
+    color: #1a1a1a;
+    border-radius: 4px;
+    padding: 2px 5px;
+    font-family: "Fira Mono", "Consolas", "Monaco", monospace;
+    font-size: 95%;
+    /* можно добавить свойство, чтобы выглядело аккуратнее: */
+    word-break: break-word;
+}
+
+
+#chat-container code {
+    color: #f8f8f2; /* тот же светлый, но не белый */
+    background: none;
+    font-family: "Fira Mono", "Consolas", "Monaco", monospace;
+}
+
+
+/* Для многострочного кода не добавляем лишних отступов */
+#chat-container pre {
+    padding: 12px;
+    border-radius: 8px;
+    background: #282c34;
+    color: #fff;
+    margin-bottom: 10px;
+}
+
+#chat-history {
+    background: #f5f6fa;
+    min-height: 150px;
+    max-height: 650px;
+    max-width: 650px;
+    height: 650px;
+    overflow-y: auto;
+    border: 1px solid #e1e4e8;
+}
+
+.ai-message {
+    background: #e8f0fe;
+    color: #145075;
+    margin-bottom: 8px;
+    border-radius: 6px;
+    padding: 8px;
+    text-align: left;
+}
+
+
+.user-message {
+    background: #def7ec;
+    color: #074c4b;
+    margin-bottom: 8px;
+    border-radius: 6px;
+    padding: 8px;
+    text-align: right;
+}
+
+.groups-section {
+    max-width: 600px;
+    margin: 40px auto 0 auto;
+    background: #fff;
+    border-radius: 8px;
+    padding: 30px 40px;
+    box-shadow: 0 3px 20px rgba(0, 0, 0, 0.05);
+    margin-bottom: 24px;
+}
+
+.groups-section h1 {
+    text-align: center;
+    color: #2176ae;
+    font-size: 2em;
+    margin-bottom: 20px;
+}
+
+.groups-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: 0;
+}
+
+.groups-tile {
+    background: #eef2f7;
+    border-radius: 6px;
+    padding: 18px 16px;
+    cursor: pointer;
+    transition: background 0.2s, box-shadow 0.2s;
+    font-size: 18px;
+    color: #145075;
+    user-select: none;
+    border: none;
+    outline: none;
+    box-shadow: none;
+}
+
+.groups-tile:hover {
+    background: #dbeaf7;
+    box-shadow: 0 2px 8px rgba(41, 118, 174, 0.05);
+}
+
+.main-flex-container {
+    display: flex;
+    justify-content: center;
+    gap: 40px; /* расстояние между блоками */
+    margin: 40px auto;
+    max-width: 1300px; /* или шире по необходимости */
+}
+
+.groups-section, .container {
+    flex: 1 1 0;
+    max-width: 600px;
+}
+
+

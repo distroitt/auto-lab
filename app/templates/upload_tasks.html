@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lint Code Checker</title>
+    <link rel="stylesheet" href="/static/upload_tasks.css">
+</head>
+<body>
+<div class="container">
+    <header>
+        <h1>Анализатор кода</h1>
+        <p>Загрузите C++ файлы для проверки линтером. <br>Нет необходимости загружать файл с интерфейсом. <br>Он
+            загрузится автоматически</p>
+    </header>
+
+    <div class="upload-container">
+        <div class="file-input-wrapper">
+            <input type="file" id="file-input" multiple accept=".cpp,.h,.hpp">
+            <label for="file-input" class="custom-file-input">
+                <span class="icon">📁</span>
+                <span>Выберите файлы</span>
+            </label>
+        </div>
+        <select id="lab-select"
+                style="margin-bottom: 20px; padding: 8px; width: 100%; border-radius: 6px; border: 1px solid #ccc;">
+            <option value="" disabled selected>Выберите лабораторную работу</option>
+        </select>
+
+        <button id="upload-btn" disabled>Загрузить и проверить</button>
+    </div>
+
+    <div class="selected-files" id="selected-files">
+        <h3>Выбранные файлы:</h3>
+        <ul id="file-list"></ul>
+    </div>
+
+    <div class="status" id="status-container" style="display: none;">
+        <div class="progress-bar">
+            <div class="progress" id="progress"></div>
+        </div>
+        <p id="status-text">Подготовка...</p>
+    </div>
+
+    <div class="results" id="results-container" style="display: none;">
+        <h3>Результаты проверки:</h3>
+        <div class="results-box" id="results-box">
+            <!-- Результаты будут отображаться здесь -->
+        </div>
+        <button id="more-btn">Подробно</button>
+    </div>
+</div>
+<script src="/static/upload_tasks.js"></script>
+</body>
+</html>

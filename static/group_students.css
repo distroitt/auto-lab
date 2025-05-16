@@ -1,0 +1,164 @@
+body {
+    background: #f5f8fa;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    color: #222;
+}
+
+h2 {
+    margin: 28px 0 24px 0;
+    font-size: 2.2rem;
+    color: #3260ff;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-shadow: 0 2px 8px #d7e3ff50;
+    text-align: center;
+}
+
+#students-list {
+    max-width: 740px;
+    margin: 0 auto;
+    background: #fff;
+    border-radius: 18px;
+    box-shadow: 0 2px 16px #0002;
+    padding: 26px 28px;
+}
+
+.student-container {
+    background: #f7faff;
+    border-radius: 10px;
+    margin-bottom: 16px;
+    padding: 16px 20px 13px 20px;
+    transition: box-shadow .2s, transform .13s;
+    box-shadow: 0 3px 18px #1e83ff09;
+    border: 1.5px solid #e7f0ff;
+    position: relative;
+}
+
+.student-container:hover {
+    box-shadow: 0 6px 32px #1e83ff18;
+    transform: translateY(-2px) scale(1.012);
+    border-color: #b7d4ff;
+}
+
+.student-header {
+    font-size: 1.19rem;
+    font-weight: 600;
+    padding-bottom: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.student-name {
+    color: #1850b7;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+}
+
+.btn-details,
+a.btn-details {
+    background: none;
+    border: none;
+    color: #704ae1;
+    font-size: 1.11em;
+    font-weight: 500;
+    cursor: pointer;
+    padding: 2px 12px 2px 6px;
+    margin-left: 24px;
+    text-decoration: underline;
+    border-radius: 7px;
+    transition: color .16s, background .12s;
+    outline: none;
+}
+
+.btn-details:hover,
+a.btn-details:hover {
+    color: #ff7e27;
+    background: #ede7ff;
+    text-decoration: none;
+}
+
+.submits-summary {
+    margin-top: 3px;
+    background: #eaf3ff;
+    border-radius: 7px;
+    padding: 8px 15px 8px 15px;
+    font-size: 1.02rem;
+    box-shadow: 0 1px 6px #e7ebfa34;
+}
+
+.submit-id {
+    color: #2564c6;
+    font-weight: 500;
+    font-family: 'JetBrains Mono', monospace, monospace;
+    font-size: 1em;
+    letter-spacing: 0.01em;
+}
+
+.submit-status {
+    font-weight: 600;
+}
+
+.submit-status.completed {
+    color: #1bb952;
+    background: #d2ffec;
+    border-radius: 8px;
+    padding: 1px 7px;
+    margin-left: 3px;
+    margin-right: 3px;
+}
+
+.submit-status.failed {
+    color: #cf3d1c;
+    background: #ffe7e3;
+    border-radius: 8px;
+    padding: 1px 7px;
+    margin-left: 3px;
+    margin-right: 3px;
+}
+
+.submit-grade {
+    font-weight: bold;
+    color: #222;
+    margin-left: 6px;
+}
+
+em {
+    color: #7d8899;
+    font-style: normal;
+}
+
+.btn-details,
+a.btn-details {
+    display: inline-flex;
+    align-items: center;
+    background: linear-gradient(90deg, #5b6bff 0%, #6e85ff 100%);
+    color: #fff !important;
+    border: none;
+    padding: 7px 20px 7px 18px;
+    border-radius: 24px;
+    font-size: 1.07em;
+    font-weight: 600;
+    box-shadow: 0 2px 10px #627aff34;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background .18s, transform .12s, box-shadow .18s;
+    margin-left: 12px;
+    outline: none;
+    gap: 7px;
+    letter-spacing: 0.02em;
+}
+
+.btn-details:hover,
+a.btn-details:hover {
+    background: linear-gradient(90deg, #4455cc 0%, #5cbcf6 100%);
+    transform: translateY(-2px) scale(1.055);
+    box-shadow: 0 4px 18px #5e79f855;
+    color: #fff !important;
+    text-decoration: none;
+}
+
+.btn-details:active,
+a.btn-details:active {
+    transform: scale(0.97);
+}

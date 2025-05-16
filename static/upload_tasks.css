@@ -11,6 +11,116 @@ body {
     line-height: 1.6;
 }
 
+/* Добавьте эти стили в существующий <style> тег */
+
+/* Общие стили для результатов */
+.results-summary {
+    margin-bottom: 20px;
+    padding: 15px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+}
+
+.summary-item {
+    padding: 6px 0;
+    font-weight: bold;
+}
+
+/* Стили для групп ошибок и предупреждений */
+.error-group, .warning-group {
+    margin-bottom: 20px;
+    border-left: 5px solid;
+    background-color: #f9f9f9;
+    border-radius: 0 8px 8px 0;
+}
+
+.error-group {
+    border-color: #e74c3c;
+}
+
+.warning-group {
+    border-color: #f39c12;
+}
+
+.error-header, .warning-header {
+    padding: 12px 15px;
+    font-weight: bold;
+    background-color: rgba(0, 0, 0, 0.05);
+    border-radius: 0 8px 0 0;
+    display: flex;
+    align-items: center;
+}
+
+.error-circle, .warning-circle {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    margin-right: 8px;
+}
+
+.error-circle {
+    background-color: #e74c3c;
+}
+
+.warning-circle {
+    background-color: #f39c12;
+}
+
+.error-item, .warning-item {
+    padding: 12px 15px;
+    border-top: 1px solid #eaebec;
+}
+
+.error-item:last-child, .warning-item:last-child {
+    border-radius: 0 0 8px 0;
+}
+
+.error-location, .warning-location,
+.error-description, .warning-description {
+    padding: 4px 0;
+    line-height: 1.6;
+}
+
+.filename, .line-number, .desc-label {
+    font-weight: 600;
+    color: #555;
+}
+
+/* Текст ошибок и предупреждений */
+.error-description {
+    color: #c0392b;
+}
+
+.warning-description {
+    color: #d35400;
+}
+
+/* Цвета итогов */
+.success {
+    color: #27ae60;
+}
+
+.warning {
+    color: #f39c12;
+}
+
+.error {
+    color: #e74c3c;
+}
+
+/* Стили для необработанного вывода */
+.raw-output {
+    white-space: pre-wrap;
+    word-break: break-word;
+    background-color: #f8f9fa;
+    padding: 15px;
+    border-radius: 8px;
+    font-family: monospace;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
 .container {
     width: 90%;
     max-width: 800px;

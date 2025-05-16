@@ -4,321 +4,52 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Красивая страница</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Arial', sans-serif;
-        }
-        
-        body {
-            background-color: #f5f5f5;
-        }
-        
-        .container {
-            width: 100%;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        
-        header {
-            background-color: #2c3e50;
-            padding: 20px 0;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-        
-        nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .logo {
-            color: #fff;
-            font-size: 24px;
-            font-weight: bold;
-        }
-        
-        .menu {
-            display: flex;
-            list-style: none;
-        }
-        
-        .menu li {
-            margin-left: 30px;
-        }
-        
-        .menu li a {
-            color: #fff;
-            text-decoration: none;
-            font-size: 16px;
-            transition: color 0.3s;
-        }
-        
-        .menu li a:hover {
-            color: #3498db;
-        }
-        
-        .auth-btn {
-            background-color: #3498db;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-        
-        .auth-btn:hover {
-            background-color: #2980b9;
-        }
-        
-        .content {
-            padding: 50px 0;
-        }
-        
-        .hero {
-            text-align: center;
-            margin-bottom: 50px;
-        }
-        
-        .hero h1 {
-            font-size: 42px;
-            margin-bottom: 20px;
-            color: #2c3e50;
-        }
-        
-        .hero p {
-            font-size: 18px;
-            color: #7f8c8d;
-            max-width: 700px;
-            margin: 0 auto;
-        }
-        
-        .login-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .login-form {
-            background-color: white;
-            padding: 30px;
-            border-radius: 10px;
-            width: 100%;
-            max-width: 400px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        }
-        
-        .form-group {
-            margin-bottom: 20px;
-        }
-        
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: bold;
-            color: #2c3e50;
-        }
-        
-        .form-group input {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-size: 16px;
-        }
-        
-        .form-actions {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .login-submit {
-            background-color: #2ecc71;
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-            transition: background-color 0.3s;
-        }
-        
-        .login-submit:hover {
-            background-color: #27ae60;
-        }
-        
-        .close-btn {
-            background-color: #e74c3c;
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-            transition: background-color 0.3s;
-        }
-        
-        .close-btn:hover {
-            background-color: #c0392b;
-        }
-        
-        footer {
-            background-color: #2c3e50;
-            color: #ecf0f1;
-            padding: 30px 0;
-            text-align: center;
-        }
-    </style>
+    <link rel="stylesheet" href="/static/main.css">
 </head>
 <body>
-    <header>
-        <div class="container">
-            <nav>
-                <div class="logo">AutoLab</div>
-                <ul class="menu">
-                    <li><a href="/tasks">Мои задачи</a></li>
-                    <li><a href="/upl_tasks">Загрузить задачу</a></li>
-                </ul>
-                <button class="auth-btn" id="loginBtn">Войти</button>
-                <button class="auth-btn" id="profileBtn" hidden>Профиль</button>
-                <button class="auth-btn" id="logoutBtn" hidden>Выйти</button>
-            </nav>
-        </div>
-    </header>
-    
-    <section class="content">
-        <div class="container">
-            <div class="hero">
-                <h1>AutoLab</h1>
-            </div>
-        </div>
-    </section>
-    
-    <div class="login-modal" id="loginModal">
-        <div class="login-form">
-            <h2 style="margin-bottom: 20px; text-align: center; color: #2c3e50;">Вход в аккаунт</h2>
-            <form id="authForm">
-                <div class="form-group">
-                    <label for="username">Имя пользователя или Email</label>
-                    <input type="text" id="username" required>
-                </div>
-                <div class="form-group">
-                    <label for="password">Пароль</label>
-                    <input type="password" id="password" required>
-                </div>
-                <div class="form-actions">
-                    <button type="button" class="close-btn" id="closeBtn">Закрыть</button>
-                    <button type="submit" class="login-submit">Войти</button>
-                </div>
-            </form>
+<header>
+    <div class="container">
+        <nav>
+            <div class="logo">AutoLab</div>
+            <ul class="menu">
+                <li><a href="/tasks">Мои задачи</a></li>
+                <li><a href="/upl_tasks">Загрузить задачу</a></li>
+            </ul>
+            <button class="auth-btn" id="loginBtn">Войти</button>
+            <button class="auth-btn" id="profileBtn" hidden>Профиль</button>
+            <button class="auth-btn" id="logoutBtn" hidden>Выйти</button>
+        </nav>
+    </div>
+</header>
+
+<section class="content">
+    <div class="container">
+        <div class="hero">
+            <h1>AutoLab</h1>
         </div>
     </div>
-    <script>
-        const loginBtn = document.getElementById('loginBtn');
-        const profileBtn = document.getElementById('profileBtn');
-        const logoutBtn = document.getElementById('logoutBtn');
-        const loginModal = document.getElementById('loginModal');
-        const closeBtn = document.getElementById('closeBtn');
-        const authForm = document.getElementById('authForm');
-        function checkAuthStatus() {
-            const isAuthenticated = localStorage.getItem('isAuthenticated');
-            document.cookie.match()
-            if (isAuthenticated === 'true') {
-                loginBtn.hidden = true;
-                profileBtn.hidden = false;
-                logoutBtn.hidden = false;
-            } else {
-                loginBtn.hidden = false;
-                profileBtn.hidden = true;
-                logoutBtn.hidden = true;
-            }
-        }
-        
-        checkAuthStatus();
-        
-        loginBtn.addEventListener('click', function() {
-            loginModal.style.display = 'flex';
-        });
-        
-        closeBtn.addEventListener('click', function() {
-            loginModal.style.display = 'none';
-        });
-        
-        window.addEventListener('click', function(event) {
-            if (event.target === loginModal) {
-                loginModal.style.display = 'none';
-            }
-        });
-        
-        logoutBtn.addEventListener('click', function() {
-            localStorage.removeItem('isAuthenticated');
-            localStorage.removeItem('username');
-            
-            loginBtn.hidden = false;
-            profileBtn.hidden = true;
-            logoutBtn.hidden = true;
-            
-            fetch("http://127.0.0.1:8000/api/logout", {
-                method: "POST",
-                credentials: "include"
-            });
-            
-            // Перенаправление на главную страницу
-            // window.location.href = "http://127.0.0.1:8000/";x
-        });
-        
-        profileBtn.addEventListener('click', function() {
-            window.location.href = "http://127.0.0.1:8000/api/profile";
-        });
-        
-        authForm.addEventListener('submit', function(event) {
-            event.preventDefault();
-            const formData = {
-                "username": document.getElementById("username").value,
-                "password": document.getElementById("password").value
-            };
-            
-            fetch("http://127.0.0.1:8000/api/auth", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(formData),
-                credentials: "include"
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.status_code === 401) {
-                    alert('Ошибка: Неверные имя пользователя или пароль!');
-                } else {
-                    localStorage.setItem('isAuthenticated', 'true');
-                    localStorage.setItem('username', formData.username);
-                    
-                    loginBtn.hidden = true;
-                    profileBtn.hidden = false;
-                    logoutBtn.hidden = false;
-                    
-                    window.location.href = "http://127.0.0.1:8000/upl_tasks";
-                }
-            })
-            .catch(error => {
-                console.error('Ошибка:', error);
-                alert('Произошла ошибка при входе');
-            });
-            
-            loginModal.style.display = 'none';
-        });
-    </script>
+</section>
+
+<div class="login-modal" id="loginModal">
+    <div class="login-form">
+        <h2 style="margin-bottom: 20px; text-align: center; color: #2c3e50;">Вход в аккаунт</h2>
+        <form id="authForm">
+            <div class="form-group">
+                <label for="username">Имя пользователя или Email</label>
+                <input type="text" id="username" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Пароль</label>
+                <input type="password" id="password" required>
+            </div>
+            <div class="form-actions">
+                <button type="button" class="close-btn" id="closeBtn">Закрыть</button>
+                <button type="submit" class="login-submit">Войти</button>
+            </div>
+        </form>
+    </div>
+</div>
+<script src="/static/main.js"></script>
 </body>
 </html>
     
