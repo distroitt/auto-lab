@@ -8,7 +8,7 @@ async function fetchWithTimeout(url, options = {}, timeout = 15000) {
     const id = setTimeout(() => controller.abort(), timeout);
 
     try {
-        const response = await fetch(url, {
+        const response = await fetch(window.env.API_BASE_URL + url, {
             ...options,
             signal: controller.signal
         });
@@ -118,7 +118,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     showLoading();
     try {
-        const res = await fetchWithTimeout(`/api/group/${groupId}`);
+        const res = await fetchWithTimeout( `/api/group/${groupId}`);
 
         if (!res.ok) {
             if (res.status === 404) {

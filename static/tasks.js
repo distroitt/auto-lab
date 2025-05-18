@@ -7,9 +7,9 @@ async function loadTasks() {
         let response;
         if (rar.split("/")[4]){
           const userId = encodeURIComponent(rar.split("/")[4]);
-          response = await fetch('/api/tasks?uid=' + userId);
+          response = await fetch(window.env.API_BASE_URL + '/api/tasks?uid=' + userId);
         }
-        else response = await fetch('/api/tasks');
+        else response = await fetch(window.env.API_BASE_URL + '/api/tasks');
 
         if (response.status === 401) {
             // Обработка unauthorized доступа
@@ -40,7 +40,7 @@ async function loadTasks() {
 
 async function loadTestCode(file, line) {
     try {
-        const response = await fetch('/api/tasks/get_test_block', {
+        const response = await fetch(window.env.API_BASE_URL + '/api/tasks/get_test_block', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ file, line }),
@@ -56,7 +56,7 @@ async function loadTestCode(file, line) {
 
 
 async function parseTestSummary(testResultStr) {
-    const response = await fetch('/api/tasks/analyze_tests', {
+    const response = await fetch(window.env.API_BASE_URL + '/api/tasks/analyze_tests', {
         method: 'POST',
         headers: { 'Content-Type': 'text/plain' },
         body: Array.isArray(testResultStr) ? testResultStr.join('\n') : testResultStr,
@@ -86,7 +86,7 @@ function appendToAiModal(markdownChunk) {
 
 async function getNeuralVerdict(task_id) {
     try {
-        const response = await fetch(`/api/tasks/get_neural_verdict?task_id=${task_id}`, {
+        const response = await fetch(window.env.API_BASE_URL + `/api/tasks/get_neural_verdict?task_id=${task_id}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
         });

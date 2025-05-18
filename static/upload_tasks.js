@@ -3,7 +3,6 @@ import {showNotification} from "./notification.js";
 document.addEventListener('DOMContentLoaded', () => {
     // Константы
     const API_URL = '/api';
-    const LABS_URL = '/admin/labs';
 
     // Кэш элементов
     const fileInput = document.getElementById('file-input');
@@ -48,7 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function loadLabs() {
         try {
-            const response = await fetch(LABS_URL);
+            const response = await fetch(window.env.API_BASE_URL + "/admin/labs");
             if (response.status === 401) {
                 console.log(response);
             // Обработка unauthorized доступа
@@ -103,7 +102,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function fetchAndAddInterfaceFile(labId) {
         try {
-            const res = await fetch(`${API_URL}/labs/${labId}/interface`);
+            const res = await fetch(window.env.API_BASE_URL + `/api/labs/${labId}/interface`);
             console.log(res);
             if (!res.ok) throw new Error('Не удалось получить файл интерфейса');
             const text = await res.text();
@@ -159,12 +158,12 @@ document.addEventListener('DOMContentLoaded', () => {
             const controller = new AbortController();
             const timeoutId = setTimeout(() => controller.abort(), 30000);
 
-            const labResponse = await fetch(`${API_URL}/labs/${labSelect.value}/interface_name`);
+            const labResponse = await fetch(window.env.API_BASE_URL + `/api/labs/${labSelect.value}/interface_name`);
             console.log(labResponse)
             if (!labResponse.ok) throw new Error('Ошибка загрузки интерфейса');
             const interfaceName = await labResponse.json();
 
-            const response = await fetch(`${API_URL}/upload?interface_name=${interfaceName}`, {
+            const response = await fetch(window.env.API_BASE_URL + `/api/upload?interface_name=${interfaceName}`, {
                 method: 'POST',
                 body: formData,
                 signal: controller.signal,
@@ -218,7 +217,7 @@ document.addEventListener('DOMContentLoaded', () => {
             try {
                 if (retries >= maxRetries) throw new Error('Превышено время ожидания результатов');
                 retries++;
-                const response = await fetch(`${API_URL}/task/${taskId}`);
+                const response = await fetch(window.env.API_BASE_URL + `/api/task/${taskId}`);
                 if (!response.ok) {
                     console.log(`Еще не готово: попытка ${retries}`);
                     return;
@@ -299,7 +298,7 @@ document.addEventListener('DOMContentLoaded', () => {
     ``
 
     async function parseTestSummary(testResultStr) {
-        const response = await fetch(`${API_URL}/tasks/analyze_tests`, {
+        const response = await fetch(window.env.API_BASE_URL + `/api/tasks/analyze_tests`, {
             method: 'POST',
             headers: {'Content-Type': 'text/plain'},
             body: Array.isArray(testResultStr) ? testResultStr.join('\n') : testResultStr,

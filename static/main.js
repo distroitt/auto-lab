@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function checkIsAdmin() {
         try {
-            const res = await fetch("/api/is_admin", {
+            const res = await fetch(window.env.API_BASE_URL + "/api/is_admin", {
                 method: "GET",
                 credentials: "include"
             });
@@ -91,7 +91,7 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.removeItem('username');
         localStorage.removeItem('isAdmin');
 
-        fetch("/api/logout", {
+        fetch(window.env.API_BASE_URL + "/api/logout", {
             method: "POST",
             credentials: "include"
         }).then(() => {
@@ -121,7 +121,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const password = document.getElementById("password").value;
 
         try {
-            const res = await fetch("/api/auth", {
+            const res = await fetch(window.env.API_BASE_URL + "/api/auth", {
                 method: "POST",
                 headers: {"Content-Type": "application/json"},
                 body: JSON.stringify({username, password}),

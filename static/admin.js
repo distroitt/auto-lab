@@ -26,7 +26,7 @@ let aiMessages = [];
 // Инициализация
 (async function init() {
     try {
-        const res = await fetch(apiUrl);
+        const res = await fetch(window.env.API_BASE_URL + "/admin/labs");
         if (!res.ok) throw new Error();
         labsData = await res.json();
         renderLabsList();
@@ -37,7 +37,7 @@ let aiMessages = [];
 
 async function getInterfaceContent(labNum) {
     try {
-        const res = await fetch(filesForLab.interface(labNum));
+        const res = await fetch(window.env.API_BASE_URL + filesForLab.interface(labNum));
         if (!res.ok) throw new Error();
         return await res.text();
     } catch {
@@ -85,7 +85,7 @@ async function loadFileContent(labNum, fileKey) {
         const url = fileKey === 'clang_tidy'
             ? filesForLab[fileKey]()
             : filesForLab[fileKey](labNum);
-        const res = await fetch(url);
+        const res = await fetch(window.env.API_BASE_URL + url);
         if (!res.ok) throw new Error('Не удалось загрузить файл');
         const text = await res.text();
         if (editor) editor.setValue(text);
@@ -177,7 +177,7 @@ function saveEditorContent() {
         url = filesForLab[fileSelect.value](currentLabNum);
     }
 
-    fetch(url, {
+    fetch(window.env.API_BASE_URL + url, {
         method: 'POST',
         headers: {'Content-Type': 'text/plain'},
         body: content,
@@ -282,7 +282,7 @@ chatSendBtn.addEventListener('click', async () => {
         });
 
         try {
-            const response = await fetch('/admin/ai', {
+            const response = await fetch(window.env.API_BASE_URL + '/admin/ai', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify(aiMessages)
@@ -392,7 +392,7 @@ async function showReauthModal() {
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Обработка...';
 
             try {
-                const resp = await fetch('provide-code', {
+                const resp = await fetch(window.env.API_BASE_URL + '/provide-code', {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify(code)
@@ -421,7 +421,7 @@ const groupsListDiv = document.getElementById('groups-list');
 // Получить и отобразить группы
 async function fetchAndRenderGroups() {
     try {
-        const res = await fetch('/api/groups');
+        const res = await fetch(window.env.API_BASE_URL + '/api/groups');
         if (!res.ok) throw new Error();
         const groups = await res.json();
         renderGroups(groups);
