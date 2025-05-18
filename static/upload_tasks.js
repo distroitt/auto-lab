@@ -213,7 +213,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function startPolling(taskId) {
         stopPolling();
         let retries = 0;
-        const maxRetries = 30;
+        const maxRetries = 50;
         pollingInterval = setInterval(async () => {
             try {
                 if (retries >= maxRetries) throw new Error('Превышено время ожидания результатов');
