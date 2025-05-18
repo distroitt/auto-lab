@@ -2,8 +2,8 @@ import {showNotification} from "./notification.js";
 
 document.addEventListener('DOMContentLoaded', () => {
     // Константы
-    const API_URL = 'http://127.0.0.1:8000/api';
-    const LABS_URL = 'http://127.0.0.1:8000/admin/labs';
+    const API_URL = '/api';
+    const LABS_URL = '/admin/labs';
 
     // Кэш элементов
     const fileInput = document.getElementById('file-input');
@@ -286,7 +286,7 @@ document.addEventListener('DOMContentLoaded', () => {
         resultsBox.innerHTML = text;
         const moreButton = document.getElementById("more-btn");
         if (moreButton) moreButton.addEventListener("click", () => {
-            window.location.href = `http://127.0.0.1:8000/tasks?taskId=${currentTaskId}`;
+            window.location.href = `/tasks?taskId=${currentTaskId}`;
         });
         files = [];
         updateFileList();

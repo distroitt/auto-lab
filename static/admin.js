@@ -1,4 +1,4 @@
-const apiUrl = 'http://127.0.0.1:8000/admin/labs'; // URL списка лабораторных
+const apiUrl = '/admin/labs'; // URL списка лабораторных
 
 const labsList = document.getElementById('labs-list');
 const modal = document.getElementById('modal');
@@ -12,9 +12,9 @@ const chatSendBtn = document.getElementById('chat-send-btn');
 const chatHistory = document.getElementById('chat-history');
 
 const filesForLab = {
-    gtest: labNum => `http://127.0.0.1:8000/api/labs/${labNum}/tests`,
-    clang_tidy: () => `http://127.0.0.1:8000/api/labs/clang-tidy`,
-    interface: labNum => `http://127.0.0.1:8000/api/labs/LR${labNum}/interface`,
+    gtest: labNum => `/api/labs/${labNum}/tests`,
+    clang_tidy: () => `/api/labs/clang-tidy`,
+    interface: labNum => `/api/labs/LR${labNum}/interface`,
 };
 
 let labsData = [];
@@ -282,7 +282,7 @@ chatSendBtn.addEventListener('click', async () => {
         });
 
         try {
-            const response = await fetch('http://127.0.0.1:8000/admin/ai', {
+            const response = await fetch('/admin/ai', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify(aiMessages)

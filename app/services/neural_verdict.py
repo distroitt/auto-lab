@@ -1,10 +1,11 @@
 import os
-
+from app.core.config import settings
 import httpx
 
 
 async def ai_stream(messages):
-    ai_endpoint = "http://127.0.0.1:8000/admin/ai"
+    ai_endpoint = settings.AI_ENDPOINT + "/admin/ai"
+
     async with httpx.AsyncClient() as client:
         try:
             async with client.stream("POST", ai_endpoint, json=messages, timeout=None) as response:

@@ -22,7 +22,6 @@ async def get_neural_verdict(task_id: str, user: dict = Depends(get_current_user
     uid = user.get("uid")
     directory = f"testing/files/{uid}/{task_id}/source"
     messages = generate_ai_payload(directory)
-
     return StreamingResponse(
         ai_stream(messages),
         media_type="text/plain"

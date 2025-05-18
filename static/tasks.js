@@ -56,7 +56,7 @@ async function loadTestCode(file, line) {
 
 
 async function parseTestSummary(testResultStr) {
-    const response = await fetch('http://127.0.0.1:8000/api/tasks/analyze_tests', {
+    const response = await fetch('/api/tasks/analyze_tests', {
         method: 'POST',
         headers: { 'Content-Type': 'text/plain' },
         body: Array.isArray(testResultStr) ? testResultStr.join('\n') : testResultStr,
