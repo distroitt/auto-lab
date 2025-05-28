@@ -18,7 +18,9 @@ def generate_ai_payload(messages) -> dict:
     }
     for message in messages:
         payload["messages"].append(message)
+    print(payload)
     return payload
+
 
 
 def event_stream(payload):

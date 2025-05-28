@@ -12,6 +12,9 @@ def create_task(uid: str) -> str:
     TASK_RESULTS[task_id] = {"status": "processing", "owner": uid}
     return task_id
 
+def restore_task(task_id: str):
+    """Восстановление задачи из БД по ее ID"""
+    TASK_RESULTS[task_id] = {}
 
 def update_task_result(task_id: str, result: Dict, extra_param='') -> None:
     """Обновляет результат выполнения задачи"""

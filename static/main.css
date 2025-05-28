@@ -2,7 +2,7 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Segoe UI', 'Arial', sans-serif;
+    font-family: 'Roboto', 'Segoe UI', system-ui, -apple-system, sans-serif;
 }
 
 body {
@@ -19,10 +19,11 @@ body {
 /* HEADER */
 header {
     background-color: #fff;
-    padding: 15px 0;
+    padding: 13.6px 0;
     box-shadow: 0 3px 20px rgba(0, 0, 0, 0.05);
     position: sticky;
     top: 0;
+      line-height: 1.6;
     z-index: 100;
 }
 
@@ -133,7 +134,7 @@ nav {
 }
 
 .hero-text {
-    font-size: 20px;
+    font-size: 18.5px;
     color: #2e3856;
     margin-bottom: 40px;
     line-height: 1.6;
@@ -380,66 +381,23 @@ footer {
         transform: translateY(0);
     }
 }
-/* Продолжение предыдущего CSS */
-@media (max-width: 768px) {
-    .menu {
-        display: none;
-    }
-
-    .hero-content h1 {
-        font-size: 40px;
-    }
-
-    .hero-text {
-        font-size: 18px;
-    }
-
-    .hero-buttons {
-        flex-direction: column;
-        gap: 15px;
-    }
-
-    .features-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .nav {
-        flex-direction: column;
-        align-items: center;
-        gap: 20px;
-    }
-
-    .auth-buttons {
-        flex-direction: column;
-        width: 100%;
-        align-items: center;
-    }
-
-    .auth-btn {
-        width: 100%;
-        justify-content: center;
-    }
-
-    .login-form {
-        width: 90%;
-        margin: 0 5%;
-        padding: 20px;
-    }
-}
 /* Стили для уведомлений */
 .notification {
     position: fixed;
-    bottom: 20px; /* Изменено с top на bottom */
-    right: 20px;
-    padding: 15px 25px;
+    bottom: 2rem;
+    right: 2rem;
+    padding: 1rem 1.5rem;
     border-radius: 8px;
     color: white;
+    max-width: 350px;
     opacity: 0;
-    transform: translateY(20px); /* Изменено для появления снизу */
+    transform: translateY(20px);
     transition: all 0.3s ease;
-    z-index: 1000;
-    max-width: 300px;
+    z-index: 1100;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
 }
 
 .notification.notification-success {
@@ -451,7 +409,7 @@ footer {
 }
 
 .notification.notification-info {
-    background-color: #3498db;
+    background-color: #2176ae;
 }
 
 .notification.show {
@@ -459,12 +417,17 @@ footer {
     transform: translateY(0);
 }
 
-/* Для адаптивности на мобильных устройствах */
-@media (max-width: 768px) {
-    .notification {
-        left: 20px;
-        right: 20px;
-        max-width: none;
-        text-align: center;
-    }
+.notification i {
+    font-size: 1.2rem;
+}
+
+.notification-close {
+    margin-left: auto;
+    cursor: pointer;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+}
+
+.notification-close:hover {
+    opacity: 1;
 }

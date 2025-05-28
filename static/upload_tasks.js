@@ -1,10 +1,6 @@
 import {showNotification} from "./notification.js";
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Константы
-    const API_URL = '/api';
-
-    // Кэш элементов
     const fileInput = document.getElementById('file-input');
     const fileList = document.getElementById('file-list');
     const uploadBtn = document.getElementById('upload-btn');
@@ -32,10 +28,15 @@ document.addEventListener('DOMContentLoaded', () => {
         fileInput.addEventListener('change', onFileInputChange);
         uploadBtn.addEventListener('click', uploadFiles);
         labSelect.addEventListener('change', async () => {
-            // Когда выбрали лабу — подкидываем интерфейс.
+            // Удаляем все interface.h из списка файлов при смене лабы
+            files = files.filter(f => f.name !== 'interface.h');
+            updateFileList();
+
+            // Когда выбрали лабораторную работу — загружаем интерфейсный файл
             await fetchAndAddInterfaceFile(labSelect.value);
             updateUploadButtonState();
         });
+
         fileList.addEventListener('click', (e) => {
             if (e.target.classList.contains('remove-file')) {
                 const index = +e.target.dataset.index;
@@ -47,18 +48,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function loadLabs() {
         try {
-            const response = await fetch(window.env.API_BASE_URL + "/admin/labs");
+            const response = await fetch(window.env.API_BASE_URL + "/api/labs");
             if (response.status === 401) {
                 console.log(response);
-            // Обработка unauthorized доступа
-            showNotification('Для загрузки задач необходимо войти в систему', 'error');
-            // Опционально: перенаправление на страницу входа
-            setTimeout(() => {
-                window.location.href = '/'; // Замените на вашу страницу входа
-            }, 2000);
+                // Обработка unauthorized доступа
+                showNotification('Для загрузки задач необходимо войти в систему', 'error');
+                // Опционально: перенаправление на страницу входа
+                setTimeout(() => {
+                    window.location.href = '/'; // Замените на вашу страницу входа
+                }, 2000);
 
-            return; // Прекращаем выполнение функции
-        }
+                return; // Прекращаем выполнение функции
+            }
             const labs = await response.json();
             labSelect.innerHTML = '<option value="" disabled selected>Выберите лабораторную работу</option>';
             labs.forEach(lab => {
@@ -67,6 +68,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 opt.textContent = lab;
                 labSelect.appendChild(opt);
             });
+            updateFileList();
             labSelect.disabled = false;
         } catch (err) {
             console.error(err);
@@ -148,6 +150,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         statusText.textContent = 'Подготовка файлов...';
         uploadBtn.disabled = true;
+        statusText.scrollIntoView();
 
         const formData = new FormData();
         files.forEach(f => formData.append('files', f));
@@ -163,7 +166,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!labResponse.ok) throw new Error('Ошибка загрузки интерфейса');
             const interfaceName = await labResponse.json();
 
-            const response = await fetch(window.env.API_BASE_URL + `/api/upload?interface_name=${interfaceName}`, {
+            const response = await fetch(window.env.API_BASE_URL + `/api/upload?interface_name=${interfaceName}&lab_num=${labSelect.value}`, {
                 method: 'POST',
                 body: formData,
                 signal: controller.signal,
@@ -224,8 +227,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
                 const taskData = await response.json();
                 if (taskData.status === 'completed') {
-                    progressBar.style.width = '100%';
-                    statusText.textContent = 'Проверка завершена!';
+                    statusContainer.style.display = "none";
+                    statusText.textContent = '';
                     await showResults(taskData);
                     stopPolling();
                     uploadBtn.disabled = false;
@@ -257,55 +260,87 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    async function showResults(result) {
-        resultsContainer.style.display = 'block';
-        let text = '';
-        console.log(result);
-        const diagnostics = result?.lint_result?.Diagnostics || [];
-        console.log(diagnostics);
-        //const warningsMatch = result.ling_result?.match(/Warnings: (\d+)/);
-        const errorsMatch = result.short_result?.match(/Errors: (\d+)/);
-        //const warnings = warningsMatch ? parseInt(warningsMatch[1]) : 0;
-        const warnings = diagnostics.length;
-        const errors = errorsMatch ? parseInt(errorsMatch[1]) : 0;
+   async function showResults(result) {
+    showNotification("Проверка завершена!", "success");
 
-        text += `<div>Результат проверки:</div>
-             <div class="${warnings > 0 ? 'warning' : 'success'}">Предупреждения: ${warnings}</div>
-             <div class="${errors > 0 ? 'error' : 'success'}">Ошибки: ${errors}</div>`;
+    // Создаем модальное окно
+    const modal = document.createElement('div');
+    modal.classList.add('modal');
+    modal.innerHTML = `
+        <div class="modal-content">
+            <button class="modal-close">&times;</button>
+            <div class="results-box">
+                <div class="results-title">Результат проверки</div>
+                <div class="warning-section ${result.lint_result.Diagnostics.length > 0 ? 'warning' : 'success'}">
+                    <span class="test-icon ${result.lint_result.Diagnostics.length > 0 ? 'warning' : 'success'}">
+                        ${result.lint_result.Diagnostics.length > 0 ? '!' : '✓'}
+                    </span>
+                    Предупреждения: ${result.lint_result.Diagnostics.length}
+                </div>
+                <div class="test-results">
+                    <div class="test-item">
+                        <b>Тестирование</b>
+                        <div>${result.test_result.passed} из ${result.test_result.total} пройдено</div>
+                    </div>
+                    <div class="test-item">
+                        <b>Оценка</b>
+                        <div>${result.grade}</div>
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button id="more-details-btn" class="primary-btn">Подробнее</button>
+                    <button id="close-modal-btn" class="secondary-btn">Закрыть</button>
+                </div>
+            </div>
+        </div>
+    `;
 
-        try {
-            if (result.test_result.total > 0) {
-                text += `<div style="margin-top:10px"><b>Тестирование:</b> ${result.test_result.passed} из ${result.test_result.total} пройдено</div>`;
-                text += `<div><b>Оценка:</b> ${result.grade}</div>`;
-            }
-        } catch {
-            text += `<div class="error" style="margin-top:10px">Ошибка разбора результатов тестирования</div>`;
+    // Добавляем модальное окно в документ
+    document.body.appendChild(modal);
+
+    // Запускаем анимацию появления
+    setTimeout(() => {
+        modal.classList.add('show');
+    }, 10);
+
+    // Закрытие модального окна при клике на крестик
+    const closeButton = modal.querySelector('.modal-close');
+    closeButton.addEventListener('click', closeModal);
+
+    // Закрытие модального окна при клике на кнопку "Закрыть"
+    const closeModalBtn = modal.querySelector('#close-modal-btn');
+    closeModalBtn.addEventListener('click', closeModal);
+
+    // Закрытие при клике на фон
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            closeModal();
         }
+    });
 
-        resultsBox.innerHTML = text;
-        const moreButton = document.getElementById("more-btn");
-        if (moreButton) moreButton.addEventListener("click", () => {
-            window.location.href = `/tasks?taskId=${currentTaskId}`;
-        });
-        files = [];
-        updateFileList();
-        fileInput.value = '';
-        labSelect.value = '';
-        updateUploadButtonState();
-        resultsContainer.scrollIntoView({behavior: 'smooth'});
+    // Переход к подробностям
+    const moreDetailsBtn = modal.querySelector('#more-details-btn');
+    moreDetailsBtn.addEventListener("click", () => {
+        window.location.href = `/tasks?taskId=${currentTaskId}`;
+    });
+
+    function closeModal() {
+        modal.classList.remove('show');
+        setTimeout(() => {
+            if (document.body.contains(modal)) {
+                document.body.removeChild(modal);
+            }
+        }, 300);
     }
 
-    ``
+    // Сбрасываем состояние формы
+    files = [];
+    updateFileList();
+    fileInput.value = '';
+    labSelect.value = '';
+    updateUploadButtonState();
+}
 
-    async function parseTestSummary(testResultStr) {
-        const response = await fetch(window.env.API_BASE_URL + `/api/tasks/analyze_tests`, {
-            method: 'POST',
-            headers: {'Content-Type': 'text/plain'},
-            body: Array.isArray(testResultStr) ? testResultStr.join('\n') : testResultStr,
-        });
-        if (!response.ok) throw new Error('Ошибка сервера при разборе тестов');
-        return response.json();
-    }
 
     function initResetButton() {
         resetButton = document.createElement('button');

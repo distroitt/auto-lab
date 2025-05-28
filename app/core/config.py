@@ -40,7 +40,7 @@ class Settings:
         "LR4": "IVector"
     }
 
-    AI_ENDPOINT = os.getenv("AI_ENDPOINT")
+    MAIN_ENDPOINT = os.getenv("MAIN_ENDPOINT")
 
     TEST_CONFIGURATION_DIR = "testing/configs"
 

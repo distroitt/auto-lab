@@ -15,7 +15,7 @@ TYPED_TEST_SUITE(MyInterfaceTest, ::testing::Types<ImplUnderTest>);
 // Проверка корректного добавления элементов и увеличения размера
 TYPED_TEST(MyInterfaceTest, PushBackIncreasesSize) {
   EXPECT_EQ((int)this->impl.size(), 0);
-  this->impl.pushBack(10);
+  this->impl.pushBack(15);
   EXPECT_EQ((int)this->impl.size(), 1);
   this->impl.pushBack(-3);
   EXPECT_EQ((int)this->impl.size(), 2);
@@ -294,4 +294,89 @@ TYPED_TEST(MyInterfaceTest, ReusableAfterClear) {
   this->impl.pushBack(33);
   EXPECT_EQ((int)this->impl.size(), 1);
   EXPECT_EQ(this->impl.get(0), 33);
+}
+
+// Проверка, что pushBack корректно добавляет несколько одинаковых элементов
+TYPED_TEST(MyInterfaceTest, PushBackDuplicates) {
+  this->impl.pushBack(8);
+  this->impl.pushBack(8);
+  this->impl.pushBack(8);
+  EXPECT_EQ((int)this->impl.size(), 3);
+  EXPECT_EQ(this->impl.get(0), 8);
+  EXPECT_EQ(this->impl.get(1), 8);
+  EXPECT_EQ(this->impl.get(2), 8);
+}
+
+// Проверка последовательного set всех элементов и получения их
+TYPED_TEST(MyInterfaceTest, SetMultipleElements) {
+  for (int i = 0; i < 5; ++i) {
+    this->impl.pushBack(0);
+  }
+  for (int i = 0; i < 5; ++i) {
+    this->impl.set(i, i * 2);
+    EXPECT_EQ(this->impl.get(i), i * 2);
+  }
+}
+
+// Проверка, что print работает после операций изменения размера
+TYPED_TEST(MyInterfaceTest, PrintAfterResize) {
+  this->impl.pushBack(100);
+  this->impl.pushBack(200);
+  this->impl.popBack();
+  EXPECT_NO_THROW(this->impl.print());
+}
+
+// Проверка, что get выдает корректные значения после insert
+TYPED_TEST(MyInterfaceTest, GetAfterInsert) {
+  this->impl.pushBack(1);
+  this->impl.pushBack(3);
+  this->impl.insert(1, 2);
+  EXPECT_EQ(this->impl.get(1), 2);
+}
+
+// Проверка, что capacity не уменьшается при popBack (если уменьшение не реализовано)
+TYPED_TEST(MyInterfaceTest, CapacityNotDecreasedOnPopBack) {
+  this->impl.pushBack(10);
+  this->impl.pushBack(20);
+  size_t cap = this->impl.capacity();
+  this->impl.popBack();
+  EXPECT_GE(this->impl.capacity(), cap);
+}
+
+// Проверка clear после insert и erase
+TYPED_TEST(MyInterfaceTest, ClearAfterInsertErase) {
+  this->impl.pushBack(10);
+  this->impl.insert(1, 20);
+  this->impl.erase(0);
+  this->impl.clear();
+  EXPECT_EQ((int)this->impl.size(), 0);
+  EXPECT_TRUE(this->impl.isEmpty());
+}
+
+// Проверка erase после set
+TYPED_TEST(MyInterfaceTest, EraseAfterSet) {
+  this->impl.pushBack(7);
+  this->impl.set(0, 77);
+  this->impl.erase(0);
+  EXPECT_EQ((int)this->impl.size(), 0);
+  EXPECT_TRUE(this->impl.isEmpty());
+}
+
+// Проверка, что print не изменяет размер контейнера
+TYPED_TEST(MyInterfaceTest, PrintDoesNotAffectSize) {
+  this->impl.pushBack(5);
+  size_t s = this->impl.size();
+  this->impl.print();
+  EXPECT_EQ(this->impl.size(), s);
+}
+
+// Проверка, что после полной очистки вставка и удаление снова корректны
+TYPED_TEST(MyInterfaceTest, InsertEraseAfterClear) {
+  this->impl.pushBack(101);
+  this->impl.clear();
+  this->impl.pushBack(11);
+  this->impl.insert(1, 22);
+  this->impl.erase(0);
+  EXPECT_EQ((int)this->impl.size(), 1);
+  EXPECT_EQ(this->impl.get(0), 22);
 }

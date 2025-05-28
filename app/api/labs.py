@@ -7,15 +7,18 @@ from app.utils.tests_utils import check_valid_content
 
 router = APIRouter()
 
+@router.get("/labs")
+async def labs():
+    return [f for f in os.listdir("testing/configs") if f.startswith("LR")]
 
 @router.get("/labs/{lab_name}/interface_name")
 async def labs_interface_name(lab_name: str):
     return settings.INTERFACE_NAMES[lab_name]
 
 
-@router.get("/labs/{lab_id}/tests")
-async def read_item(lab_id: int):
-    file_path = os.path.join(settings.TEST_CONFIGURATION_DIR, f'LR{lab_id}', 'testing.cpp')
+@router.get("/labs/{lab_name}/tests")
+async def read_item(lab_name: str):
+    file_path = os.path.join(settings.TEST_CONFIGURATION_DIR, lab_name, 'testing.cpp')
     content = await read_file(file_path)
     return PlainTextResponse(content)
 
@@ -52,11 +55,11 @@ async def apply_item(request: Request):
     return {"sucess": True}
 
 
-@router.post("/labs/{lab_id}/tests")
-async def apply_item(lab_id: int, request: Request):
+@router.post("/labs/{lab_name}/tests")
+async def apply_item(lab_name, request: Request):
     content = await request.body()
     text = content.decode('utf-8')
     await check_valid_content(text)
-    file_path = os.path.join(settings.TEST_CONFIGURATION_DIR, f'LR{lab_id}', 'testing.cpp')
+    file_path = os.path.join(settings.TEST_CONFIGURATION_DIR, lab_name, 'testing.cpp')
     await save_text_file(text, file_path)
     return {"sucess": True}

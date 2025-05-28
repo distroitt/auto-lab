@@ -16,14 +16,12 @@ async def run_test(task_id: str, uid: str, interface_name: str):
         if not impl_name or not filename:
             update_task_result(task_id, {"test_result": "Неверное название интерфейса"})
         else:
-            await save_file(f"IMPLEMENTATION_NAME={impl_name}\nREALIZATION_FILE={filename}".encode("utf-8"), ".env")
+            await save_file(f"IMPLEMENTATION_NAME={impl_name}\nREALIZATION_FILE={filename}".encode("utf-8"), f"{directory_path}/.env")
             output = await execute_docker_command(uid, task_id)
             test_results = analyze_test_results(output)
-            print(test_results)
             with open(directory_path + "/test.json", "w") as f:
                 json.dump(test_results, f)
             update_task_result(task_id, {"test_result": test_results})
-
     except Exception as e:
         print(f"Ошибка: {e}")
         return {"error": str(e)}
@@ -44,7 +42,7 @@ async def find_implementation(directory_path: str, interface_name: str):
 async def execute_docker_command(uid: str, task_id: str):
     """Запуск Docker-контейнера и выполнение команды внутри."""
     docker_cmd = (
-        f"docker run --rm -it --env-file=.env  "
+        f"docker run --rm -it --env-file=$(pwd)/testing/files/{uid}/{task_id}/source/.env  "
         f"-v $(pwd)/testing/files/{uid}/{task_id}/source:/test/files:ro -v $(pwd)/testing/configs/LR4:/test/test_files -v $(pwd)/testing/configs/CMakeLists.txt:/test/CMakeLists.txt:ro distroit/test"
     )
     process = await asyncio.create_subprocess_shell(

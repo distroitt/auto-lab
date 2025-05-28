@@ -4,7 +4,8 @@ import httpx
 
 
 async def ai_stream(messages):
-    ai_endpoint = settings.AI_ENDPOINT + "/admin/ai"
+    """Возвращает сообщения от нейросети в виде потока сообщений"""
+    ai_endpoint = settings.MAIN_ENDPOINT + "/admin/ai"
 
     async with httpx.AsyncClient() as client:
         try:
@@ -19,6 +20,7 @@ async def ai_stream(messages):
 
 
 def generate_ai_payload(directory) -> list:
+    """Формирует запрос к нейросети"""
     messages = []
     for file in os.listdir(directory):
         if file.endswith(".cpp") or file.endswith(".h"):

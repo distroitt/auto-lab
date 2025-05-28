@@ -21,49 +21,11 @@
 }
 
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Roboto', 'Segoe UI', system-ui, -apple-system, sans-serif;
     background: var(--bg-color);
     margin: 0;
     color: var(--text-color);
     line-height: 1.6;
-}
-
-.header {
-    background: var(--primary-color);
-    color: white;
-    padding: 1rem 2rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-}
-
-.header h1 {
-    margin: 0;
-    font-size: 1.8rem;
-    color: white;
-}
-
-.header-btn {
-    background: rgba(255, 255, 255, 0.15);
-    border: none;
-    color: white;
-    padding: 0.5rem 1rem;
-    border-radius: var(--border-radius);
-    cursor: pointer;
-    transition: background 0.2s;
-    font-size: 0.9rem;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.header-btn:hover {
-    background: rgba(255, 255, 255, 0.25);
-}
-
-.header-btn i {
-    font-size: 1rem;
 }
 
 .main-flex-container {
@@ -142,7 +104,7 @@ body {
     background-color: var(--card-bg);
     border-radius: var(--border-radius);
     width: 90%;
-    max-width: 950px;
+    max-width: 1150px;
     height: auto;
     position: absolute;
     left: 50%;
@@ -215,7 +177,7 @@ body {
 
 .editor-chat-container {
     display: flex;
-    height: 410px;
+    height: 480px;
     gap: 1rem;
     padding: 1rem;
 }
@@ -244,7 +206,7 @@ body {
     padding: 0.75rem;
     border-radius: var(--border-radius);
     border: 1px solid var(--border-color);
-    max-height: 250px;
+    max-height: 320px;
     /* Добавляем тень для визуального разделения */
     box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.05);
 }
@@ -321,48 +283,238 @@ body {
     background-color: #f8f9fa;
 }
 
-.ai-message {
-    background: #e8f0fe;
-    color: #1e3a5c;
-    margin-bottom: 0.75rem;
-    border-radius: var(--border-radius);
-    padding: 0.75rem 1rem 0.75rem 1.5rem; /* Увеличиваем левый отступ до 1.5rem */
-    position: relative;
-    border-left: 4px solid #4c8dca;
-    font-size: 1rem;
-    line-height: 1.6;
-    text-align: left;
-    letter-spacing: 0.3px;
-    font-weight: 400;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.07);
-    word-wrap: break-word;
-}
 
 
 .user-message {
-    background: #def7ec;
-    color: #205e5d;
-    margin-bottom: 0.75rem;
-    border-radius: var(--border-radius);
-    padding: 0.75rem;
+    background: linear-gradient(135deg, #f0fff4 0%, #dcfce7 100%);
+    color: #166534;
+    margin-bottom: 1rem;
+    border-radius: 12px;
+    padding: 1rem 1.25rem;
     text-align: right;
-    border-right: 4px solid #34b77f;
+    border-right: 4px solid #16a34a;
     font-size: 0.9rem;
+    line-height: 1.6;
+    box-shadow: 0 3px 12px rgba(22, 163, 74, 0.08);
+    position: relative;
+    transition: all 0.2s ease;
 }
 
+.user-message:hover {
+    box-shadow: 0 5px 20px rgba(22, 163, 74, 0.12);
+    transform: translateY(-1px);
+}
+
+.user-message::after {
+    content: "👤";
+    position: absolute;
+    right: -12px;
+    top: 12px;
+    background: #16a34a;
+    color: white;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    box-shadow: 0 2px 8px rgba(22, 163, 74, 0.3);
+}
+
+/* Анимация появления пользовательского сообщения */
+@keyframes userMessageSlide {
+    from {
+        opacity: 0;
+        transform: translateX(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.user-message {
+    animation: userMessageSlide 0.4s ease-out;
+}
+
+.ai-message {
+    background: linear-gradient(135deg, #f8fbff 0%, #e8f4fd 100%);
+    color: #1a365d;
+    margin-bottom: 1rem;
+    border-radius: 12px;
+    padding: 1.25rem 1.5rem;
+    position: relative;
+    border-left: 4px solid #3182ce;
+    font-size: 0.95rem;
+    line-height: 1.7;
+    text-align: left;
+    letter-spacing: 0.2px;
+    font-weight: 400;
+    box-shadow: 0 3px 12px rgba(49, 130, 206, 0.08);
+    word-wrap: break-word;
+    transition: all 0.2s ease;
+}
+
+.ai-message:hover {
+    box-shadow: 0 5px 20px rgba(49, 130, 206, 0.12);
+    transform: translateY(-1px);
+}
+
+/* Иконка AI перед сообщением */
+.ai-message::before {
+    content: "🤖";
+    position: absolute;
+    left: -12px;
+    top: 12px;
+    background: #3182ce;
+    color: white;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    box-shadow: 0 2px 8px rgba(49, 130, 206, 0.3);
+}
+
+/* Улучшенные стили для кода */
 .ai-message pre {
-    max-width: 100%;
+    background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+    margin: 1rem 0;
+    font-size: 0.78rem;
+    line-height: 1.5;
     overflow-x: auto;
-    background-color: #f1f1f1;
+    border: 1px solid #4a5568;
+    position: relative;
+}
+
+.ai-message pre::before {
+    content: "";
+    position: absolute;
+    top: 8px;
+    right: 12px;
+    background: #4a5568;
+    color: #cbd5e0;
+    padding: 2px 8px;
     border-radius: 4px;
-    padding: 0.5rem;
-    margin: 0.5rem 0;
-    font-size: 0.8rem;
-    line-height: 1.4;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 .ai-message code {
-    font-family: 'Consolas', 'Monaco', monospace;
+    font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', 'Monaco', monospace;
+    color: #e2e8f0;
+    background: transparent;
+}
+
+/* Стили для инлайн кода */
+.ai-message code:not(pre code) {
+    background: #edf2f7;
+    color: #2d3748;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.9em;
+    border: 1px solid #e2e8f0;
+}
+
+/* Стили для списков в AI сообщениях */
+.ai-message ul, .ai-message ol {
+    margin: 0.75rem 0;
+    padding-left: 1.5rem;
+}
+
+.ai-message li {
+    margin-bottom: 0.5rem;
+    line-height: 1.6;
+}
+
+.ai-message li::marker {
+    color: #3182ce;
+}
+
+/* Стили для заголовков в AI сообщениях */
+.ai-message h1, .ai-message h2, .ai-message h3,
+.ai-message h4, .ai-message h5, .ai-message h6 {
+    color: #2c5282;
+    margin: 1rem 0 0.5rem 0;
+    font-weight: 600;
+}
+
+.ai-message h1 { font-size: 1.25rem; }
+.ai-message h2 { font-size: 1.15rem; }
+.ai-message h3 { font-size: 1.1rem; }
+
+/* Стили для ссылок в AI сообщениях */
+.ai-message a {
+    color: #3182ce;
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: all 0.2s;
+}
+
+.ai-message a:hover {
+    border-bottom-color: #3182ce;
+    background: rgba(49, 130, 206, 0.05);
+    padding: 2px 4px;
+    border-radius: 4px;
+    margin: -2px -4px;
+}
+
+/* Стили для блочных цитат */
+.ai-message blockquote {
+    border-left: 3px solid #3182ce;
+    margin: 1rem 0;
+    padding: 0.75rem 1rem;
+    background: rgba(49, 130, 206, 0.05);
+    border-radius: 0 8px 8px 0;
+    font-style: italic;
+}
+
+/* Стили для таблиц в AI сообщениях */
+.ai-message table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.ai-message th, .ai-message td {
+    padding: 0.75rem;
+    text-align: left;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.ai-message th {
+    background: #3182ce;
+    color: white;
+    font-weight: 600;
+}
+
+.ai-message tr:nth-child(even) {
+    background: rgba(49, 130, 206, 0.02);
+}
+
+/* Анимация появления AI сообщения */
+@keyframes aiMessageSlide {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.ai-message {
+    animation: aiMessageSlide 0.4s ease-out;
 }
 
 /* Уведомления */
@@ -433,55 +585,6 @@ body {
     to {
         opacity: 1;
         transform: translate(-50%, -50%);
-    }
-}
-
-@media (max-width: 1024px) {
-    .main-flex-container {
-        grid-template-columns: 1fr;
-        gap: 1.5rem;
-    }
-
-    .editor-chat-container {
-        flex-direction: column;
-        height: auto;
-    }
-
-    .editor-container, .chat-container {
-        width: 100%;
-    }
-
-    .editor-container {
-        height: 300px;
-    }
-
-    .chat-history {
-        max-height: 200px;
-    }
-
-    .chat-input {
-        height: 50px;
-    }
-
-    .modal-content {
-        width: 95%;
-        max-height: 90vh;
-        overflow-y: auto;
-    }
-}
-
-@media (max-width: 600px) {
-    .header {
-        flex-direction: column;
-        gap: 1rem;
-        text-align: center;
-        padding: 1rem;
-    }
-
-    .notification {
-        left: 1rem;
-        right: 1rem;
-        max-width: none;
     }
 }
 

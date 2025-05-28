@@ -5,16 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AutoLab - Анализатор кода</title>
     <link rel="stylesheet" href="/static/upload_tasks.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-    <header class="main-header">
-        <div class="header-container">
-            <a href="/" class="logo">AutoLab</a>
-            <nav class="main-nav">
-                <a href="/tasks" class="nav-link">Главная</a>
-            </nav>
-        </div>
-    </header>
+   <header class="header">
+    <h1>AutoLab</h1>
+       <link rel="stylesheet" href="/static/header.css">
+    <div style="display: flex; gap: 12px;">
+        <button class="header-btn" id="home-btn" onclick="window.location.href='/'">
+            <i class="fas fa-home"></i> Главная
+        </button>
+    </div>
+</header>
 
     <div class="container">
         <h1 class="page-title">Анализатор кода</h1>
@@ -53,11 +55,9 @@
         </div>
 
         <div class="results-section" id="results-container">
-            <h2 class="section-title">Результаты проверки</h2>
             <div class="results-box" id="results-box">
                 <!-- Результаты будут отображаться здесь -->
             </div>
-            <button id="more-btn" class="secondary-btn">Подробно</button>
         </div>
     </div>
     <script src="/static/env.js"></script>

@@ -4,6 +4,7 @@ import bisect
 
 
 def extract_test_block(lines, line_number):
+    """Возвращает блок кода с конкретным тестом"""
     patterns = [
         re.compile(r'^\s*TYPED_TEST\s*\('),
     ]
@@ -35,6 +36,10 @@ def extract_test_block(lines, line_number):
 
 
 def analyze_test_results(test_result_str: str):
+    """
+    Анализирует текстовый выход из контейнера тестов и возвращает
+    структурированные результаты тестов
+    """
     tests_summary = {}
     test_starts = []
     test_names = []
@@ -118,13 +123,6 @@ def analyze_test_results(test_result_str: str):
     for test in failed_tests:
         if test in tests_summary:
             tests_summary[test]['status'] = 'failed'
-    with open("gtest.json", "w") as f:
-        json.dump({
-            'total': total,
-            'passed': passed,
-            'failed': failed,
-            'tests': tests_summary
-        }, f)
     return {
         'total': total,
         'passed': passed,

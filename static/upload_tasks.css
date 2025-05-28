@@ -30,31 +30,6 @@ body {
     padding: 0;
 }
 
-/* Заголовок сайта */
-.main-header {
-    background-color: var(--primary-color);
-    color: white;
-    padding: 16px 0;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-.header-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 24px;
-}
-
-.logo {
-    font-size: 26px;
-    font-weight: 700;
-    color: white;
-    text-decoration: none;
-    letter-spacing: -0.5px;
-}
-
 .main-nav {
     display: flex;
     align-items: center;
@@ -80,9 +55,10 @@ body {
 .container {
     width: 90%;
     max-width: 800px;
-    margin: 40px auto;
+    margin: 28px auto;
     padding: 30px;
     background: white;
+    line-height: 1.2;
     border-radius: var(--border-radius);
     box-shadow: var(--card-shadow);
 }
@@ -309,21 +285,172 @@ select:disabled {
     font-size: 15px;
 }
 
-/* Секция результатов */
-.results-section {
-    margin-top: 30px;
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(3px);
+}
+
+.modal.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+.modal-content {
+    background: white;
+    border-radius: var(--border-radius);
+    max-width: 480px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+    position: relative;
+    transform: scale(0.8) translateY(-20px);
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.modal.show .modal-content {
+    transform: scale(1) translateY(0);
+}
+
+.modal-close {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    color: #a0aec0;
+    transition: color 0.2s;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    z-index: 10;
+}
+
+.modal-close:hover {
+    color: var(--danger-color);
+    background-color: rgba(231, 76, 60, 0.1);
+}
+
+/* Обновленные стили для results-box в модальном окне */
+.modal .results-box {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+    padding: 30px;
+    background: white;
+    border-radius: var(--border-radius);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Убираем цветную полоску сверху */
+.modal .results-box::before {
     display: none;
 }
 
-.results-box {
-    padding: 20px;
-    background-color: #f8fafc;
-    border-radius: var(--border-radius);
-    border: 1px solid #edf2f7;
-    min-height: 100px;
-    margin-bottom: 20px;
-    line-height: 1.6;
+.modal .results-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--text-color);
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #e2e8f0;
+    margin: 0;
 }
+
+.modal .warning-section {
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px;
+    border-radius: var(--border-radius);
+    background-color: rgba(39, 174, 96, 0.05);
+    border: 1px solid rgba(39, 174, 96, 0.2);
+}
+
+.modal .warning-section.warning {
+    background-color: rgba(241, 196, 15, 0.05);
+    border-color: rgba(241, 196, 15, 0.2);
+    color: #d35400;
+}
+
+.modal .test-results {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+}
+
+.modal .test-item {
+    background-color: #f8fafc;
+    padding: 15px;
+    border-radius: var(--border-radius);
+    border: 1px solid #e2e8f0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.modal .test-item:first-child {
+    background-color: rgba(41, 128, 185, 0.05);
+    border-color: rgba(41, 128, 185, 0.2);
+}
+
+.modal .test-item:last-child {
+    background-color: rgba(39, 174, 96, 0.05);
+    border-color: rgba(39, 174, 96, 0.2);
+}
+
+.modal-actions {
+    display: flex;
+    gap: 15px;
+    margin-top: 10px;
+}
+
+.modal-actions .primary-btn,
+.modal-actions .secondary-btn {
+    flex: 1;
+    margin: 0;
+}
+
+/* Анимация для иконок */
+.test-icon {
+    width: 24px;
+    height: 24px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    font-weight: bold;
+}
+
+.test-icon.success {
+    background-color: rgba(39, 174, 96, 0.2);
+    color: var(--success-color);
+}
+
+.test-icon.warning {
+    background-color: rgba(241, 196, 15, 0.2);
+    color: #d35400;
+}
+
 
 /* Стили результатов */
 .results-summary {
@@ -332,6 +459,11 @@ select:disabled {
     background-color: #f8fafc;
     border-radius: var(--border-radius);
     border: 1px solid #edf2f7;
+}
+.results-section {
+    margin-top: 30px;
+    display: none;
+    animation: fadeIn 0.5s ease;
 }
 
 .summary-item {
@@ -427,36 +559,6 @@ select:disabled {
     border: 1px solid #edf2f7;
     color: #2c3e50;
     overflow-x: auto;
-}
-
-/* Адаптивность */
-@media (max-width: 768px) {
-    .container {
-        width: 95%;
-        padding: 20px;
-    }
-
-    .upload-section {
-        gap: 15px;
-    }
-
-    .button-group {
-        flex-direction: column;
-    }
-
-    .primary-btn,
-    .secondary-btn {
-        padding: 12px 18px;
-        font-size: 14px;
-    }
-
-    .nav-link {
-        padding: 6px 12px;
-    }
-
-    .header-container {
-        padding: 0 16px;
-    }
 }
 
 /* Анимации */
@@ -627,25 +729,6 @@ button:focus {
 .modal-close:hover {
     color: var(--danger-color);
 }
-
-/* Печатные стили */
-@media print {
-    body * {
-        visibility: hidden;
-    }
-
-    .results-section,
-    .results-section * {
-        visibility: visible;
-    }
-
-    .results-section {
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 100%;
-    }
-}
 .notification {
     position: fixed;
     bottom: 2rem;
@@ -665,7 +748,7 @@ button:focus {
 }
 
 .notification.notification-success {
-    background-color: var(--secondary-color);
+    background-color: #2ecc71;
 }
 
 .notification.notification-error {
@@ -673,7 +756,7 @@ button:focus {
 }
 
 .notification.notification-info {
-    background-color: var(--primary-color);
+    background-color: #2176ae;
 }
 
 .notification.show {

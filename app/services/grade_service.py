@@ -2,10 +2,11 @@ import json
 import yaml
 import time
 from app.services.task_service import get_task, update_task_result
-from app.utils.db_service import execute_db_request
+from app.utils.db_utils import execute_db_request
 
 
-async def get_grade(task_id: str, uid: str):
+async def get_grade(task_id: str, uid: str, lab_num: str):
+    """Формирует оценку и делает запись о посылке в базу данных"""
     while get_task(task_id)["status"] != "completed":
         time.sleep(1)
 
@@ -110,10 +111,10 @@ async def get_grade(task_id: str, uid: str):
         for diag in diagnostics:
             category = get_linter_category(diag.get('DiagnosticName', ''))
             print(f"  {category}: {diag.get('DiagnosticName', '')}")
-
+    update_task_result(task_id, {"lab_num": lab_num})
     update_task_result(task_id, {"grade": score, "test_result": data})
     update_task_result(task_id, clang_tidy_report, "lint_result")
     lint_result = json.dumps(get_task(task_id)["lint_result"], ensure_ascii=False, indent=2)
     test_result = json.dumps(data)
-    sql = "INSERT INTO tasks (id, grade, test_result, lint_result, owner) VALUES (?, ?, ?, ?, ?)"
-    execute_db_request(sql, (task_id, score, test_result, lint_result, uid))
+    sql = "INSERT INTO tasks (id, lab_num, grade, test_result, lint_result, owner) VALUES (?, ?, ?, ?, ?, ?)"
+    execute_db_request(sql, (task_id, lab_num, score, test_result, lint_result, uid))

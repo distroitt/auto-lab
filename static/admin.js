@@ -1,4 +1,3 @@
-const apiUrl = '/admin/labs'; // URL списка лабораторных
 
 const labsList = document.getElementById('labs-list');
 const modal = document.getElementById('modal');
@@ -12,7 +11,7 @@ const chatSendBtn = document.getElementById('chat-send-btn');
 const chatHistory = document.getElementById('chat-history');
 
 const filesForLab = {
-    gtest: labNum => `/api/labs/${labNum}/tests`,
+    gtest: labNum => `/api/labs/LR${labNum}/tests`,
     clang_tidy: () => `/api/labs/clang-tidy`,
     interface: labNum => `/api/labs/LR${labNum}/interface`,
 };
@@ -26,7 +25,7 @@ let aiMessages = [];
 // Инициализация
 (async function init() {
     try {
-        const res = await fetch(window.env.API_BASE_URL + "/admin/labs");
+        const res = await fetch(window.env.API_BASE_URL + "/api/labs");
         if (!res.ok) throw new Error();
         labsData = await res.json();
         renderLabsList();
@@ -137,6 +136,8 @@ window.addEventListener('click', e => {
             modal.style.display = 'none';
             modal.style.animation = '';
         }, 300);
+        aiMessages = [];
+        chatHistory.innerHTML = '';
     }
 });
 
@@ -197,7 +198,7 @@ function saveEditorContent() {
                 }
             }
             editor.setValue(prevContent);
-            showNotification('Ошибка при сохранении файла: ' + errorMessage, 'error');
+            showNotification(errorMessage, 'error');
         }
     })
         .catch(() => {

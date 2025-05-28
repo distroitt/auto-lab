@@ -2,5 +2,5 @@ from pydantic import BaseModel
 
 
 class TestRequest(BaseModel):
-    file: str
+    lab_num: str
     line: int

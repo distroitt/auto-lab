@@ -1,6 +1,6 @@
 FROM alpine
 
-WORKDIR /test
+RUN apk add --no-cache clang-extra-tools llvm
 
 RUN apk add --no-cache git cmake make gcc g++
 

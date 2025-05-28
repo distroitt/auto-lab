@@ -6,17 +6,19 @@
     <title>Студенты группы</title>
     <link rel="stylesheet" href="/static/group_students.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
 </head>
 <body>
-<!-- Хедер в стиле AutoLab -->
-    <header class="main-header">
-        <div class="header-container">
-            <a href="/" class="logo">AutoLab</a>
-            <nav class="main-nav">
-                <a href="/" class="nav-link">Главная</a>
-            </nav>
-        </div>
-    </header>
+<header class="header">
+    <h1>AutoLab</h1>
+    <div style="display: flex; gap: 12px;">
+        <button class="header-btn" id="home-btn" onclick="window.location.href='/'">
+            <i class="fas fa-home"></i> Главная
+        </button>
+    </div>
+    <link rel="stylesheet" href = "/static/header.css">
+</header>
     <div class="container">
         <h2>Студенты группы</h2>
         <div id="students-list" class="students-list-container">
@@ -27,6 +29,6 @@
         </div>
     </div>
     <script src="/static/env.js"></script>
-    <script src="/static/group_students.js"></script>
+    <script type="module" src="/static/group_students.js"></script>
 </body>
 </html>

@@ -1,16 +1,15 @@
 import { showNotification } from './notification.js';
-
+let userId;
 // ===== API FUNCTIONS =====
 async function loadTasks() {
     try {
         const rar = document.documentURI;
         let response;
         if (rar.split("/")[4]){
-          const userId = encodeURIComponent(rar.split("/")[4]);
+            userId = encodeURIComponent(rar.split("/")[4]);
           response = await fetch(window.env.API_BASE_URL + '/api/tasks?uid=' + userId);
         }
         else response = await fetch(window.env.API_BASE_URL + '/api/tasks');
-
         if (response.status === 401) {
             // Обработка unauthorized доступа
             showNotification('Для просмотра задач необходимо войти в систему', 'error');
@@ -26,8 +25,11 @@ async function loadTasks() {
         if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
 
         const data = await response.json();
-        document.getElementById('loading').style.display = 'none';
-        renderTasks(data);
+        if (Object.keys(data).length === 0) {
+            document.getElementById("loading").textContent = 'Задачи не найдены';
+        }else
+        {document.getElementById('loading').style.display = 'none';
+        renderTasks(data);}
     } catch (error) {
         console.error('Ошибка при загрузке задач:', error);
         document.getElementById('loading').textContent =
@@ -38,12 +40,12 @@ async function loadTasks() {
     }
 }
 
-async function loadTestCode(file, line) {
+async function loadTestCode(lab_num, line) {
     try {
         const response = await fetch(window.env.API_BASE_URL + '/api/tasks/get_test_block', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ file, line }),
+            body: JSON.stringify({ lab_num, line }),
         });
         if (!response.ok) return `Ошибка HTTP: ${response.status}`;
         const data = await response.json();
@@ -67,26 +69,10 @@ async function parseTestSummary(testResultStr) {
 
 let aiModalAccumResult = '';
 
-function appendToAiModal(markdownChunk) {
-    const modalBody = document.getElementById('ai-modal-body');
-    if (!modalBody) return;
-
-    // Конвертируем markdown часть в HTML
-    // Для корректного добавления покусочно преобразуем chunk в HTML и добавляем его
-    const htmlChunk = marked.parse(markdownChunk);
-
-    // Добавляем в конец содержимого (сохраняем предыдущий текст!)
-    modalBody.innerHTML += htmlChunk;
-
-    // По желанию можно прокрутить скролл в конец чтобы видеть новые данные
-    modalBody.scrollTop = modalBody.scrollHeight;
-}
-
-
-
 async function getNeuralVerdict(task_id) {
     try {
-        const response = await fetch(window.env.API_BASE_URL + `/api/tasks/get_neural_verdict?task_id=${task_id}`, {
+        console.log(userId);
+        const response = await fetch(window.env.API_BASE_URL + `/api/tasks/get_neural_verdict?task_id=${task_id}&uid=${userId}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
         });
@@ -215,7 +201,6 @@ function createTaskElement(taskId, taskDescription) {
         // Test results container
         const contentWrapper = document.createElement('div');
         contentWrapper.className = 'content-wrapper';
-
         // Линтер/Ошибки
         if (taskDescription.lint_result) renderLinterResult(taskDescription.lint_result, contentWrapper);
 
@@ -238,6 +223,7 @@ function createTaskElement(taskId, taskDescription) {
 // ===== HELPERS =====
 function renderLinterResult(result, wrapper) {
     // Очищаем wrapper
+    console.log(result);
     wrapper.innerHTML = '';
     const diagnostics = result?.Diagnostics || [];
     if (diagnostics.length === 0) {
@@ -248,16 +234,10 @@ function renderLinterResult(result, wrapper) {
         return;
     }
 
-    // Получаем количество ошибок и варнингов
-    const errorCount = diagnostics.filter(d => d.Level === 'Error').length;
-    const warnCount = diagnostics.filter(d => d.Level === 'Warning').length;
-
     // Красивый блок-сводка
     const summary = document.createElement('div');
     summary.className = 'lint-header';
     summary.innerHTML = `
-        <span style="color: #e74c3c; font-weight: bold;">Ошибки: ${errorCount}</span>
-        <span style="color: #f39c12; font-weight: bold; margin-left:18px;">Предупреждения: ${warnCount}</span>
         <span style="float:right;color:#777;">Всего: ${diagnostics.length}</span>
     `;
     wrapper.appendChild(summary);
@@ -288,13 +268,13 @@ function renderLinterResult(result, wrapper) {
             msgDiv.style.marginTop = '4px';
             diagDiv.appendChild(msgDiv);
         }
-
         // 3. Файл, строка с ярким выделением номера строки
         const file = diag.DiagnosticMessage?.FilePath || '';
+        const split_file = file.split('/')[3];
         if (file) {
             const fileDiv = document.createElement('div');
             fileDiv.className = 'lint-filepath';
-            fileDiv.innerHTML = `Файл: <span style="color:#2980b9;font-weight:500">${file}</span>
+            fileDiv.innerHTML = `Файл: <span style="color:#2980b9;font-weight:500">${split_file}</span>
             <span> | </span>
             Строка: <span style="background:#f9c3c3;color:#b40013;
             font-weight:bold; padding:1px 7px; border-radius:8px;">
@@ -302,21 +282,6 @@ function renderLinterResult(result, wrapper) {
             diagDiv.appendChild(fileDiv);
             i += 1;
         }
-
-        // 4. Примечания/подсказки (если есть)
-        // if (Array.isArray(diag.Notes) && diag.Notes.length > 0) {
-        //     const notesDiv = document.createElement('div');
-        //     notesDiv.className = 'lint-notes';
-        //     notesDiv.innerHTML = '<div style="margin-top:5px;font-size:90%;color:#555">Подсказки:</div>';
-        //     const ul = document.createElement('ul');
-        //     diag.Notes.forEach(note => {
-        //         const li = document.createElement('li');
-        //         li.textContent = note.Message || '';
-        //         ul.appendChild(li);
-        //     });
-        //     notesDiv.appendChild(ul);
-        //     diagDiv.appendChild(notesDiv);
-        // }
 
         wrapper.appendChild(diagDiv);
     });
@@ -341,7 +306,7 @@ function renderTestSummaryBlock(summary, taskId, wrapper, result) {
                             ${testData.errors.map((error, i) => {
                     const errorId = `error-${taskId}-${i}-${Math.random().toString(36).slice(2, 8)}`;
                     return `<li>
-                                    <b>Файл:</b> ${error.file}, <b>строка:</b> ${error.line}<br>
+                                    <b>Файл:</b> ${error.file.split("/")[3]}, <b>строка:</b> ${error.line}<br>
                                     <b>Описание ошибки:</b>
                                     <pre style="white-space:pre-wrap; background:#f5f5f5; color:#333; border:1px solid #ddd; padding:8px;">${error.error}</pre>
                                     <button class="show-test-btn" data-file="${encodeURIComponent(error.file)}" data-line="${error.line}" data-target="${errorId}">Показать тест</button>
@@ -367,7 +332,7 @@ function renderTestSummaryBlock(summary, taskId, wrapper, result) {
                         return;
                     }
                     this.textContent = 'Загрузка...';
-                    const testCode = await loadTestCode(file, line);
+                    const testCode = await loadTestCode(result.lab_num, line);
                     viewer.innerHTML = `<pre>${testCode.replace(/</g, '&lt;')}</pre>`;
                     viewer.style.display = 'block';
                     this.textContent = 'Скрыть тест';
