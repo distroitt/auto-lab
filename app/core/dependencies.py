@@ -15,7 +15,7 @@ def is_admin(data):
     if isinstance(data, Request):
         return decode_access_token(data.cookies[settings.JWT_ACCESS_COOKIE_NAME])["uid"] in settings.ADMINS
     elif isinstance(data, dict):
-        return data.get("uid") not in settings.ADMINS
+        return data.get("uid") in settings.ADMINS
     elif isinstance(data, str):
         return data in settings.ADMINS
     else:

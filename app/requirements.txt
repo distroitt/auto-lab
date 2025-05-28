@@ -5,3 +5,5 @@ PyYAML
 fastapi
 aiofiles
 python-multipart
+uvicorn
+httpx
