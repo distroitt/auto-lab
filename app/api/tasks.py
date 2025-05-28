@@ -22,10 +22,10 @@ async def get_neural_verdict(
         task_id: str = None,
         uid: str | None = None,
 ):
+    if uid == "undefined":
+        uid = user.get("uid")
     if not is_admin(user):
-        if uid == "undefined":
-            uid = user.get("uid")
-        elif user.get(uid) != uid and task_id not in get_user_tasks(user.get("uid")):
+        if user.get(uid) != uid and task_id not in get_user_tasks(user.get("uid")):
             raise HTTPException(status_code=401)
     directory = f"testing/files/{uid}/{task_id}/source"
     messages = generate_ai_payload(directory)
