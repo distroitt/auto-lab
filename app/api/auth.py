@@ -3,7 +3,6 @@ from fastapi import Response, APIRouter, HTTPException, Request
 from app.schemas.user import UserLogin
 from app.core.security import create_access_token
 from app.core.config import settings
-from app.core.security import decode_access_token
 from app.utils.db_utils import execute_db_request
 from app.core.dependencies import is_admin
 
@@ -25,12 +24,9 @@ async def root(creds: UserLogin, response: Response):
         return {"access_token": token}
     return HTTPException(401)
 
-
 @router.get("/is_admin")
 async def check_is_admin(request: Request):
-    if is_admin(request):
-        return True
-    return False
+    return bool(is_admin(request))
 
 @router.post("/logout")
 async def logout(response: Response):

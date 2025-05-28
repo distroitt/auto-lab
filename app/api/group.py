@@ -1,5 +1,4 @@
 from fastapi import HTTPException
-
 from fastapi import APIRouter, Depends
 from app.core.config import settings
 from app.utils.db_utils import execute_db_request

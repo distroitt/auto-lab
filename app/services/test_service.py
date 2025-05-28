@@ -8,7 +8,7 @@ from app.utils.file_utils import save_file, read_file
 from app.services.analyze_test_service import analyze_test_results
 
 
-async def run_test(task_id: str, uid: str, interface_name: str):
+async def run_test(task_id: str, uid: str, interface_name: str, lab_num: str):
     """Запуск гугл тестов"""
     try:
         directory_path = f"testing/files/{uid}/{task_id}/source"
@@ -17,7 +17,7 @@ async def run_test(task_id: str, uid: str, interface_name: str):
             update_task_result(task_id, {"test_result": "Неверное название интерфейса"})
         else:
             await save_file(f"IMPLEMENTATION_NAME={impl_name}\nREALIZATION_FILE={filename}".encode("utf-8"), f"{directory_path}/.env")
-            output = await execute_docker_command(uid, task_id)
+            output = await execute_docker_command(uid, task_id, lab_num)
             test_results = analyze_test_results(output)
             with open(directory_path + "/test.json", "w") as f:
                 json.dump(test_results, f)
@@ -39,11 +39,11 @@ async def find_implementation(directory_path: str, interface_name: str):
     return None, None
 
 
-async def execute_docker_command(uid: str, task_id: str):
+async def execute_docker_command(uid: str, task_id: str, lab_num: str):
     """Запуск Docker-контейнера и выполнение команды внутри."""
     docker_cmd = (
         f"docker run --rm -it --env-file=$(pwd)/testing/files/{uid}/{task_id}/source/.env  "
-        f"-v $(pwd)/testing/files/{uid}/{task_id}/source:/test/files:ro -v $(pwd)/testing/configs/LR4:/test/test_files -v $(pwd)/testing/configs/CMakeLists.txt:/test/CMakeLists.txt:ro distroit/test"
+        f"-v $(pwd)/testing/files/{uid}/{task_id}/source:/test/files:ro -v $(pwd)/testing/configs/{lab_num}:/test/test_files -v $(pwd)/testing/configs/CMakeLists.txt:/test/CMakeLists.txt:ro distroit/test"
     )
     process = await asyncio.create_subprocess_shell(
         docker_cmd,

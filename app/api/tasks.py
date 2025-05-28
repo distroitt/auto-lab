@@ -57,7 +57,7 @@ async def upload_files(interface_name: str, background_tasks: BackgroundTasks, f
                     settings.HASHES.append(hash_value)
         await save_file(b"", f"{task_dir}/res.yaml")
 
-        background_tasks.add_task(run_test, task_id, uid, interface_name)
+        background_tasks.add_task(run_test, task_id, uid, interface_name, lab_num)
         background_tasks.add_task(run_lint_check, task_id, uid)
         background_tasks.add_task(get_grade, task_id, uid, lab_num)
         return JSONResponse(content={"task_id": task_id})
