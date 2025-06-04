@@ -22,11 +22,12 @@ async def get_neural_verdict(
         task_id: str = None,
         uid: str | None = None,
 ):
-    if uid == "undefined":
+    if not uid or uid == "undefined":
         uid = user.get("uid")
     if not is_admin(user):
         if user.get(uid) != uid and task_id not in get_user_tasks(user.get("uid")):
             raise HTTPException(status_code=401)
+
     directory = f"testing/files/{uid}/{task_id}/source"
     messages = generate_ai_payload(directory)
     return StreamingResponse(
@@ -38,8 +39,12 @@ async def get_neural_verdict(
 @router.post("/upload")
 async def upload_files(interface_name: str, background_tasks: BackgroundTasks, files: list[UploadFile], lab_num: str,
                        user: dict = Depends(get_current_user)):
+    total_files_size = 0
+    for file in files:
+        total_files_size += file.size
+    if total_files_size > settings.MAX_FILES_SIZE:
+        raise HTTPException(status_code=404, detail="Превышен максимально допустимый размер файлов")
     try:
-        print(lab_num)
         uid = user.get("uid")
         task_id = create_task(uid)
         task_dir = create_task_directory(uid, task_id)
@@ -50,11 +55,12 @@ async def upload_files(interface_name: str, background_tasks: BackgroundTasks, f
                     content = '#include "interface.h"\n'.encode('utf-8') + content
             await save_file(content, f"{task_dir}/{file.filename}")
             if file.filename.endswith(".cpp") and not settings.DEBUG:
-                hash_value = hash_file(task_dir + "/" + file.filename)
+                hash_value = hash_file(task_dir + file.filename)
                 if hash_value in settings.HASHES:
                     raise HTTPException(status_code=404, detail="Такой файл уже был отправлен кем-либо)")
                 else:
                     settings.HASHES.append(hash_value)
+
         await save_file(b"", f"{task_dir}/res.yaml")
 
         background_tasks.add_task(run_test, task_id, uid, interface_name, lab_num)
@@ -64,7 +70,6 @@ async def upload_files(interface_name: str, background_tasks: BackgroundTasks, f
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-
 
 
 @router.post('/tasks/get_test_block')
@@ -111,11 +116,15 @@ async def get_task_status(task_id: str, user: dict = Depends(get_current_user)):
 async def get_user_code(user: dict = Depends(get_current_user),
                         task_id: str = None,
                         uid: str | None = None, ):
-    if is_admin(user):
-        raise HTTPException(status_code=401)
     source_path = f"testing/files/{uid}/{task_id}/source/"
     content = {}
     for file in os.listdir(source_path):
         if file != "interface.h" and (file.endswith(".cpp") or file.endswith(".h")):
             content.update({file: await read_file(source_path + file)})
-    return content
+    if not is_admin(user):
+        if task_id in get_user_tasks(uid):
+            return content
+        else:
+            raise HTTPException(status_code=401)
+    else:
+        return content

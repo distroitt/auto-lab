@@ -22,7 +22,6 @@ app.add_middleware(
 )
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
-
 init_database()
 set_site_url()
 app.include_router(auth.router, prefix="/api", tags=["Auth"])

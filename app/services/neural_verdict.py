@@ -38,7 +38,7 @@ def generate_ai_payload(directory) -> list:
         'role': 'user',
         'content': [{
             'type': 'text',
-            'text': 'Проанализируй соответствие файла реализации с файлом интерфейса'
+            'text': 'Проанализируй соответствие файла(ов) реализации с файлом интерфейса'
         }]
     })
     return messages

@@ -11,7 +11,6 @@ protected:
 
 TYPED_TEST_SUITE(MyInterfaceTest, ::testing::Types<ImplUnderTest>);
 
-
 // Проверка корректного добавления элементов и увеличения размера
 TYPED_TEST(MyInterfaceTest, PushBackIncreasesSize) {
   EXPECT_EQ((int)this->impl.size(), 0);
@@ -379,4 +378,34 @@ TYPED_TEST(MyInterfaceTest, InsertEraseAfterClear) {
   this->impl.erase(0);
   EXPECT_EQ((int)this->impl.size(), 1);
   EXPECT_EQ(this->impl.get(0), 22);
+}
+
+TYPED_TEST(MyInterfaceTest, PushBackManyElements) {
+    for (int i = 0; i < 100; ++i) {
+        this->impl.pushBack(i);
+        EXPECT_EQ(this->impl.get(i), i);
+        EXPECT_EQ((int)this->impl.size(), i + 1);
+    }
+}
+
+
+TYPED_TEST(MyInterfaceTest, InsertAtMiddleShiftsElements) {
+    this->impl.pushBack(1);
+    this->impl.pushBack(3);
+    this->impl.insert(1, 2); // Вставка в середину
+    EXPECT_EQ(this->impl.get(0), 1);
+    EXPECT_EQ(this->impl.get(1), 2);
+    EXPECT_EQ(this->impl.get(2), 3);
+}
+
+TYPED_TEST(MyInterfaceTest, EraseMultipleElements) {
+    this->impl.pushBack(1);
+    this->impl.pushBack(2);
+    this->impl.pushBack(3);
+    this->impl.pushBack(4);
+    this->impl.erase(1); // удаляем второй элемент
+    EXPECT_EQ(this->impl.get(1), 3);
+    this->impl.erase(1); // еще раз удаляем второй элемент
+    EXPECT_EQ(this->impl.get(1), 4);
+    EXPECT_EQ((int)this->impl.size(), 2);
 }

@@ -7,9 +7,11 @@ from app.utils.tests_utils import check_valid_content
 
 router = APIRouter()
 
+
 @router.get("/labs")
 async def labs():
     return [f for f in os.listdir("testing/configs") if f.startswith("LR")]
+
 
 @router.get("/labs/{lab_name}/interface_name")
 async def labs_interface_name(lab_name: str):
@@ -43,8 +45,6 @@ async def apply_item(lab_name: str, request: Request):
     text = content.decode('utf-8')
     file_path = os.path.join(settings.TEST_CONFIGURATION_DIR, lab_name, 'interface.h')
     await save_text_file(text, file_path)
-    return {"sucess": True}
-
 
 @router.post("/labs/clang-tidy")
 async def apply_item(request: Request):
@@ -52,8 +52,6 @@ async def apply_item(request: Request):
     text = content.decode('utf-8')
     file_path = os.path.join(settings.TEST_CONFIGURATION_DIR, '.clang-tidy')
     await save_text_file(text, file_path)
-    return {"sucess": True}
-
 
 @router.post("/labs/{lab_name}/tests")
 async def apply_item(lab_name, request: Request):
@@ -62,4 +60,3 @@ async def apply_item(lab_name, request: Request):
     await check_valid_content(text)
     file_path = os.path.join(settings.TEST_CONFIGURATION_DIR, lab_name, 'testing.cpp')
     await save_text_file(text, file_path)
-    return {"sucess": True}

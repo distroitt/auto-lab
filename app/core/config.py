@@ -5,7 +5,7 @@ from fastapi import WebSocket
 
 
 class Settings:
-    DEBUG: bool = True
+    DEBUG: bool = False
 
     # JWT settings
     JWT_SECRET_KEY: str = os.getenv("JWT_SECRET", "goida") if not DEBUG else "goida"
@@ -32,6 +32,8 @@ class Settings:
     LIST_OF_GROUPS = ["453501", "453502", "453503", "453504", "453505"]
 
     HASHES = []
+
+    MAX_FILES_SIZE = 5 * 1024 * 1024 #МB
 
     ADMINS = ["45350004", ]
 

@@ -5,7 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AutoLab</title>
     <link rel="stylesheet" href="/static/main.css">
+    <link rel="stylesheet" href="/static/notification.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:400,500,700&display=swap">
 </head>
 <body>
 <header>
@@ -18,8 +20,8 @@
             </ul>
             <div class="auth-buttons">
                 <button class="auth-btn" id="loginBtn"><i class="fas fa-sign-in-alt"></i> Войти</button>
-                <button class="auth-btn profile-btn" id="profileBtn" hidden><i class="fas fa-user"></i> Профиль</button>
-                <button class="auth-btn logout-btn" id="logoutBtn" hidden><i class="fas fa-sign-out-alt"></i> Выйти</button>
+                <button class="auth-btn profile-btn" id="profileBtn" style="display:none;"><i class="fas fa-user"></i> Профиль</button>
+                <button class="auth-btn logout-btn" id="logoutBtn" style="display:none;"><i class="fas fa-sign-out-alt"></i> Выйти</button>
             </div>
         </nav>
     </div>
@@ -29,7 +31,7 @@
     <div class="container">
         <div class="hero-content">
             <h1>AutoLab</h1>
-            <p class="hero-text">Инновационная платформа для автоматической проверки и анализа лабораторных работ</p>
+            <p class="hero-text">Современная платформа для автоматической проверки и анализа лабораторных работ</p>
             <div class="hero-buttons">
                 <a href="/tasks" class="hero-btn" id="work-btn">Начать работу</a>
                 <a href="#features" class="hero-btn secondary">Узнать больше</a>
@@ -62,16 +64,16 @@
 </section>
 
 <div class="login-modal" id="loginModal">
-    <div class="login-form">
-        <h2>Вход в аккаунт</h2>
+    <div class="login-form" role="dialog" aria-modal="true" aria-labelledby="loginTitle">
+        <h2 id="loginTitle">Вход в аккаунт</h2>
         <form id="authForm">
             <div class="form-group">
                 <label for="username">Имя пользователя или Email</label>
-                <input type="text" id="username" required>
+                <input type="text" id="username" autocomplete="username" required>
             </div>
             <div class="form-group">
                 <label for="password">Пароль</label>
-                <input type="password" id="password" required>
+                <input type="password" id="password" autocomplete="current-password" required>
             </div>
             <div class="form-actions">
                 <button type="button" class="close-btn" id="closeBtn">Закрыть</button>
@@ -85,7 +87,7 @@
     <div class="container">
         <div class="footer-content">
             <div class="footer-logo">AutoLab</div>
-            <p>&copy; 2025 AutoLab. Все права защищены.</p>
+            <p>&copy; 2025 AutoLab.</p>
         </div>
     </div>
 </footer>

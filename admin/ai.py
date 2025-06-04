@@ -2,7 +2,7 @@ import json
 import time
 
 import requests
-import admin.services.auth_browser as auth_browser
+import admin.auth_browser as auth_browser
 
 
 def generate_ai_payload(messages) -> dict:
@@ -18,12 +18,12 @@ def generate_ai_payload(messages) -> dict:
     }
     for message in messages:
         payload["messages"].append(message)
-    print(payload)
     return payload
 
 
 
 def event_stream(payload):
+    print(payload)
     url = "https://app.chathub.gg/api/v3/chat/completions"
     headers = {
         "Content-Type": "application/json",

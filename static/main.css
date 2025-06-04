@@ -1,3 +1,13 @@
+:root {
+    --main-blue: #2176ae;
+    --dark-blue: #145075;
+    --background: #eef2f7;
+    --danger: #ff6b6b;
+    --success: #2ecc71;
+    --footer-background: #2e3856;
+}
+
+/* Общие стили */
 * {
     margin: 0;
     padding: 0;
@@ -23,7 +33,7 @@ header {
     box-shadow: 0 3px 20px rgba(0, 0, 0, 0.05);
     position: sticky;
     top: 0;
-      line-height: 1.6;
+    line-height: 1.6;
     z-index: 100;
 }
 
@@ -34,7 +44,7 @@ nav {
 }
 
 .logo {
-    color: #2176ae;
+    color: var(--main-blue);
     font-size: 28px;
     font-weight: bold;
     letter-spacing: 0.5px;
@@ -58,7 +68,7 @@ nav {
 }
 
 .menu li a:hover {
-    color: #2176ae;
+    color: var(--main-blue);
 }
 
 .menu li a i {
@@ -71,7 +81,7 @@ nav {
 }
 
 .auth-btn {
-    background-color: #2176ae;
+    background-color: var(--main-blue);
     color: white;
     border: none;
     padding: 10px 20px;
@@ -86,7 +96,7 @@ nav {
 }
 
 .auth-btn:hover {
-    background-color: #145075;
+    background-color: var(--dark-blue);
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(33, 118, 174, 0.2);
 }
@@ -101,12 +111,12 @@ nav {
 }
 
 .profile-btn:hover {
-    background-color: #dbeaf7;
-    color: #145075;
+    background-color: var(--background);
+    color: var(--dark-blue);
 }
 
 .logout-btn {
-    background-color: #ff6b6b;
+    background-color: var(--danger);
 }
 
 .logout-btn:hover {
@@ -116,7 +126,7 @@ nav {
 /* HERO SECTION */
 .hero-section {
     padding: 100px 0;
-    background: linear-gradient(135deg, #fff 0%, #eef2f7 100%);
+    background: linear-gradient(135deg, #fff 0%, var(--background) 100%);
 }
 
 .hero-content {
@@ -128,7 +138,7 @@ nav {
 .hero-content h1 {
     font-size: 60px;
     font-weight: 700;
-    color: #2176ae;
+    color: var(--main-blue);
     margin-bottom: 20px;
     animation: fadeIn 1s ease-out;
 }
@@ -152,7 +162,7 @@ nav {
 
 .hero-btn {
     padding: 14px 32px;
-    background: #2176ae;
+    background: var(--main-blue);
     color: white;
     border-radius: 6px;
     text-decoration: none;
@@ -163,15 +173,15 @@ nav {
 }
 
 .hero-btn:hover {
-    background: #145075;
+    background: var(--dark-blue);
     transform: translateY(-3px);
     box-shadow: 0 6px 20px rgba(33, 118, 174, 0.3);
 }
 
 .hero-btn.secondary {
     background: transparent;
-    color: #2176ae;
-    border: 2px solid #2176ae;
+    color: var(--main-blue);
+    border: 2px solid var(--main-blue);
 }
 
 .hero-btn.secondary:hover {
@@ -189,7 +199,7 @@ nav {
 .section-title {
     text-align: center;
     font-size: 36px;
-    color: #2176ae;
+    color: var(--main-blue);
     margin-bottom: 60px;
 }
 
@@ -200,7 +210,7 @@ nav {
 }
 
 .feature-card {
-    background: #eef2f7;
+    background: var(--background);
     border-radius: 8px;
     padding: 30px;
     text-align: center;
@@ -215,7 +225,7 @@ nav {
 
 .feature-icon {
     font-size: 44px;
-    color: #2176ae;
+    color: var(--main-blue);
     margin-bottom: 20px;
 }
 
@@ -267,7 +277,7 @@ nav {
 .login-form h2 {
     margin-bottom: 30px;
     text-align: center;
-    color: #2176ae;
+    color: var(--main-blue);
     font-size: 24px;
 }
 
@@ -292,7 +302,7 @@ nav {
 }
 
 .form-group input:focus {
-    border-color: #2176ae;
+    border-color: var(--main-blue);
     box-shadow: 0 0 0 3px rgba(33, 118, 174, 0.2);
     outline: none;
 }
@@ -305,7 +315,7 @@ nav {
 }
 
 .login-submit {
-    background-color: #2176ae;
+    background-color: var(--main-blue);
     color: white;
     border: none;
     padding: 12px 24px;
@@ -317,13 +327,13 @@ nav {
 }
 
 .login-submit:hover {
-    background-color: #145075;
+    background-color: var(--dark-blue);
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(33, 118, 174, 0.2);
 }
 
 .close-btn {
-    background-color: #ff6b6b;
+    background-color: var(--danger);
     color: white;
     border: none;
     padding: 12px 24px;
@@ -342,7 +352,7 @@ nav {
 
 /* FOOTER */
 footer {
-    background-color: #2e3856;
+    background-color: var(--footer-background);
     color: #ecf0f1;
     padding: 40px 0;
     margin-top: 80px;
@@ -380,54 +390,4 @@ footer {
         opacity: 1;
         transform: translateY(0);
     }
-}
-/* Стили для уведомлений */
-.notification {
-    position: fixed;
-    bottom: 2rem;
-    right: 2rem;
-    padding: 1rem 1.5rem;
-    border-radius: 8px;
-    color: white;
-    max-width: 350px;
-    opacity: 0;
-    transform: translateY(20px);
-    transition: all 0.3s ease;
-    z-index: 1100;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-}
-
-.notification.notification-success {
-    background-color: #2ecc71;
-}
-
-.notification.notification-error {
-    background-color: #e74c3c;
-}
-
-.notification.notification-info {
-    background-color: #2176ae;
-}
-
-.notification.show {
-    opacity: 1;
-    transform: translateY(0);
-}
-
-.notification i {
-    font-size: 1.2rem;
-}
-
-.notification-close {
-    margin-left: auto;
-    cursor: pointer;
-    opacity: 0.7;
-    transition: opacity 0.2s;
-}
-
-.notification-close:hover {
-    opacity: 1;
 }

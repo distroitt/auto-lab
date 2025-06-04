@@ -19,13 +19,14 @@
     --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.05);
     --shadow-md: 0 4px 16px rgba(30, 131, 255, 0.12);
     --shadow-lg: 0 8px 30px rgba(94, 121, 248, 0.25);
-        --border-radius: 8px;
+    --border-radius: 8px;
     --radius-sm: 8px;
     --radius-md: 12px;
     --radius-lg: 18px;
     --radius-full: 9999px;
     --transition-fast: 0.15s ease;
     --transition-normal: 0.25s ease;
+    --font-family-mono: 'JetBrains Mono', monospace;
 }
 
 * {
@@ -39,78 +40,6 @@ body {
     font-family: 'Roboto', 'Segoe UI', system-ui, -apple-system, sans-serif;
     color: var(--neutral-700);
     line-height: 1.6;
-    padding: 0;
-    margin: 0;
-}
-
-.notification {
-    position: fixed;
-    bottom: 2rem;
-    right: 2rem;
-    padding: 1rem 1.5rem;
-    border-radius: var(--border-radius);
-    color: white;
-    max-width: 350px;
-    opacity: 0;
-    transform: translateY(20px);
-    transition: all 0.3s ease;
-    z-index: 1100;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-}
-
-.notification.notification-success {
-    background-color: #2ecc71;
-}
-
-.notification.notification-error {
-    background-color: #e74c3c;
-}
-
-.notification.notification-info {
-    background-color: #2176ae;
-}
-
-.notification.show {
-    opacity: 1;
-    transform: translateY(0);
-}
-
-.notification i {
-    font-size: 1.2rem;
-}
-
-.notification-close {
-    margin-left: auto;
-    cursor: pointer;
-    opacity: 0.7;
-    transition: opacity 0.2s;
-}
-
-.notification-close:hover {
-    opacity: 1;
-}
-
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
-}
-
-@keyframes slideIn {
-    from {
-        opacity: 0;
-        transform: translate(-50%, -60%);
-    }
-    to {
-        opacity: 1;
-        transform: translate(-50%, -50%);
-    }
 }
 
 .main-nav {
@@ -118,21 +47,6 @@ body {
     align-items: center;
 }
 
-.nav-link {
-    color: white;
-    text-decoration: none;
-    font-weight: 500;
-    font-family: 'Inter', sans-serif;
-    padding: 6px 12px;
-    border-radius: 4px;
-    transition: background-color var(--transition-fast);
-}
-
-.nav-link:hover {
-    background-color: rgba(255, 255, 255, 0.15);
-}
-
-/* Основной контент */
 .container {
     max-width: 850px;
     margin: 0 auto;
@@ -167,13 +81,15 @@ h2 {
     border: 1.5px solid var(--neutral-200);
     position: relative;
     overflow: hidden;
+    animation: fadeInUp 0.3s ease-out;
 }
 
 .student-container:last-child {
     margin-bottom: 0;
 }
 
-.student-container:hover {
+.student-container:hover,
+.student-container:focus-within {
     box-shadow: var(--shadow-md);
     transform: translateY(-3px);
     border-color: var(--neutral-400);
@@ -200,6 +116,7 @@ h2 {
     color: var(--neutral-500);
     font-weight: 500;
     font-size: 0.95rem;
+    user-select: text;
 }
 
 .btn-details {
@@ -220,10 +137,13 @@ h2 {
     letter-spacing: 0.02em;
 }
 
-.btn-details:hover {
+.btn-details:hover,
+.btn-details:focus-visible {
     background: var(--gradient-hover);
     transform: translateY(-2px);
     box-shadow: var(--shadow-lg);
+    outline-offset: 2px;
+    outline: 2px solid var(--primary-color);
 }
 
 .btn-details:active {
@@ -290,67 +210,64 @@ h2 {
 .submit-id {
     color: var(--primary-dark);
     font-weight: 600;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: var(--font-family-mono);
     font-size: 0.85rem;
     letter-spacing: 0.01em;
     background: var(--neutral-100);
     padding: 0.2rem 0.5rem;
     border-radius: var(--radius-sm);
-    flex-shrink: 0; /* Изменено на 0, так как теперь ID короткий */
+    flex-shrink: 0;
     white-space: nowrap;
     cursor: help;
     transition: all var(--transition-fast);
     min-width: fit-content;
-}
-
-.submit-id:hover {
-    background: var(--neutral-200);
-    transform: scale(1.02);
-}
-
-/* Tooltip для полного ID */
-.submit-id {
     position: relative;
 }
 
-.submit-id::before {
-    content: attr(title);
+.submit-id:hover,
+.submit-id:focus-visible {
+    background: var(--neutral-200);
+    transform: scale(1.02);
+    outline: none;
+}
+
+.submit-id::before,
+.submit-id::after {
     position: absolute;
     bottom: 100%;
     left: 50%;
     transform: translateX(-50%);
+    opacity: 0;
+    visibility: hidden;
+    transition: all var(--transition-fast);
+    pointer-events: none;
+    z-index: 100;
+}
+
+.submit-id::before {
+    content: attr(title);
     background: var(--neutral-700);
     color: white;
     padding: 0.5rem 0.75rem;
     border-radius: var(--radius-sm);
     font-size: 0.8rem;
     white-space: nowrap;
-    opacity: 0;
-    visibility: hidden;
-    transition: all var(--transition-fast);
-    z-index: 100;
     margin-bottom: 0.5rem;
-    pointer-events: none;
+    max-width: 260px;
+    overflow-wrap: break-word;
 }
 
 .submit-id::after {
     content: '';
-    position: absolute;
-    bottom: 100%;
-    left: 50%;
-    transform: translateX(-50%);
     border: 5px solid transparent;
     border-top-color: var(--neutral-700);
-    opacity: 0;
-    visibility: hidden;
-    transition: all var(--transition-fast);
-    z-index: 100;
     margin-bottom: -5px;
-    pointer-events: none;
 }
 
 .submit-id:hover::before,
-.submit-id:hover::after {
+.submit-id:hover::after,
+.submit-id:focus-visible::before,
+.submit-id:focus-visible::after {
     opacity: 1;
     visibility: visible;
 }
@@ -421,13 +338,20 @@ h2 {
     white-space: nowrap;
 }
 
-.btn-files:hover {
+.btn-files:hover,
+.btn-files:focus-visible {
     background-color: var(--neutral-200);
     transform: translateY(-1px);
     box-shadow: var(--shadow-sm);
+    outline-offset: 2px;
+    outline: 2px solid var(--primary-color);
 }
 
-/* Стили для модального окна */
+.btn-files:active {
+    transform: translateY(0) scale(0.98);
+}
+
+/* Модальное окно */
 .code-modal {
     position: fixed;
     top: 0;
@@ -443,6 +367,10 @@ h2 {
     padding: 1rem;
 }
 
+.code-modal.show {
+    display: flex;
+}
+
 .code-modal-content {
     background: white;
     border-radius: var(--radius-lg);
@@ -454,6 +382,7 @@ h2 {
     flex-direction: column;
     box-shadow: var(--shadow-lg);
     border: 1.5px solid var(--neutral-200);
+    outline: none;
 }
 
 .code-modal-header {
@@ -488,9 +417,12 @@ h2 {
     transition: background-color var(--transition-fast), color var(--transition-fast);
 }
 
-.code-modal-close:hover {
+.code-modal-close:hover,
+.code-modal-close:focus-visible {
     background-color: var(--neutral-100);
     color: var(--primary-color);
+    outline-offset: 2px;
+    outline: 2px solid var(--primary-color);
 }
 
 .code-modal-body {
@@ -498,6 +430,12 @@ h2 {
     overflow-y: auto;
     flex: 1;
     background: white;
+    font-family: var(--font-family-mono);
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: var(--neutral-700);
+    white-space: pre-wrap;
+    word-break: break-word;
 }
 
 .file-container {
@@ -518,7 +456,7 @@ h2 {
 
 .file-header strong {
     color: var(--primary-dark);
-    font-family: 'JetBrains Mono', monospace;
+    font-family: var(--font-family-mono);
     font-size: 0.95rem;
 }
 
@@ -528,7 +466,7 @@ h2 {
     margin: 0;
     overflow-x: auto;
     white-space: pre-wrap;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: var(--font-family-mono);
     font-size: 0.9rem;
     line-height: 1.6;
     color: var(--neutral-700);
@@ -574,17 +512,6 @@ h2 {
         transform: rotate(360deg);
     }
 }
-.btn-details:focus,
-.btn-files:focus,
-.code-modal-close:focus {
-    outline: 2px solid var(--primary-color);
-    outline-offset: 2px;
-}
-
-/* Анимация появления */
-.student-container {
-    animation: fadeInUp 0.3s ease-out;
-}
 
 @keyframes fadeInUp {
     from {
@@ -595,4 +522,12 @@ h2 {
         opacity: 1;
         transform: translateY(0);
     }
+}
+
+/* Фокус состояния для кнопок */
+.btn-details:focus,
+.btn-files:focus,
+.code-modal-close:focus {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
 }
