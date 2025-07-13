@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Список лабораторных работ</title>
+  <link rel="stylesheet" href="/static/notification.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+  <link rel="stylesheet" href="/static/admin.css" />
+  <link rel="stylesheet" href="/static/header.css" />
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body>
+  <header class="header">
+    <h1>AutoLab</h1>
+    <nav class="header-nav">
+      <button class="header-btn" id="home-btn" aria-label="Главная" onclick="window.location.href='/'">
+        <i class="fas fa-home" aria-hidden="true"></i> Главная
+      </button>
+    </nav>
+  </header>
+
+  <main class="main-flex-container" role="main">
+    <section aria-label="Группы">
+      <div class="card">
+        <div class="section-title">
+          <i class="fas fa-users" aria-hidden="true"></i>
+          <h2>Группы</h2>
+        </div>
+        <div id="groups-list" class="groups-list"></div>
+      </div>
+    </section>
+
+    <section aria-label="Лабораторные работы">
+      <div class="card">
+        <div class="section-title">
+          <i class="fas fa-flask" aria-hidden="true"></i>
+          <h2>Лабораторные работы</h2>
+        </div>
+        <ul id="labs-list" style="list-style: none; padding: 0;"></ul>
+      </div>
+    </section>
+  </main>
+
+  <div id="modal" class="modal" role="dialog" aria-modal="true" aria-label="Редактирование файла" tabindex="-1">
+    <div class="modal-content">
+      <header class="modal-header">
+        <h2 class="modal-title"></h2>
+        <select id="file-select" class="file-select" aria-label="Выбор файла">
+          <option value="gtest">Тесты</option>
+          <option value="clang_tidy">Настройки линтера</option>
+          <option value="interface">Интерфейс</option>
+        </select>
+        <button id="close-modal" class="close" aria-label="Закрыть">&times;</button>
+      </header>
+
+      <div class="editor-chat-container">
+        <div id="editor" class="editor-container" tabindex="0"></div>
+
+        <aside id="chat-container" class="chat-container" aria-label="Чат с ИИ">
+          <div id="chat-history" class="chat-history" role="log" aria-live="polite" aria-relevant="additions"></div>
+          <textarea id="chat-input" class="chat-input" placeholder="Ваш вопрос..." aria-label="Введите вопрос"></textarea>
+          <div class="chat-buttons">
+            <button id="accept-changes-btn" class="btn btn-success btn-block" aria-label="Принять изменения из ИИ">
+              <i class="fas fa-check-circle"></i> Принять изменения
+            </button>
+            <button id="chat-send-btn" class="btn btn-primary btn-block" aria-label="Отправить сообщение">
+              <i class="fas fa-paper-plane"></i> Отправить
+            </button>
+          </div>
+        </aside>
+      </div>
+
+      <footer class="modal-footer">
+        <button id="save-btn" class="btn btn-primary" aria-label="Сохранить файл">
+          <i class="fas fa-save"></i> Сохранить
+        </button>
+      </footer>
+    </div>
+  </div>
+
+  <script src="/static/env.js"></script>
+  <script type="module" src="/static/admin.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.45.0/min/vs/loader.js"></script>
+</body>
+</html>

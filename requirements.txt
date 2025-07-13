@@ -1,0 +1,9 @@
+requests
+selenium
+PyJWT
+PyYAML
+fastapi
+aiofiles
+python-multipart
+uvicorn
+httpx

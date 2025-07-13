@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0, minimum-scale=1.0" />
+    <title>Результаты проверки кода | AutoLab</title>
+    <link rel="stylesheet" href="/static/tasks.css" />
+    <link rel="stylesheet" href="/static/notification.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github-dark.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js" defer></script>
+    <script defer>
+        document.addEventListener('DOMContentLoaded', () => {
+            marked.setOptions({
+                highlight: (code, lang) => hljs.highlightAuto(code, [lang]).value
+            });
+        });
+    </script>
+    <link rel="stylesheet" href="/static/header.css" />
+</head>
+
+<body>
+<header class="header">
+    <h1>AutoLab</h1>
+    <div style="display: flex; gap: 12px;">
+        <button class="header-btn" id="home-btn" aria-label="Перейти на главную страницу" onclick="window.location.href='/'">
+            <i class="fas fa-home" aria-hidden="true"></i> Главная
+        </button>
+    </div>
+</header>
+
+<main class="main-content">
+    <div class="container">
+        <h1 class="page-title">Результаты проверки кода</h1>
+
+        <div id="loading" role="status" aria-live="polite">Загрузка результатов...</div>
+
+        <div id="tasks-container" aria-live="polite" aria-atomic="true">
+            <!-- Задачи подгружаются сюда -->
+        </div>
+    </div>
+</main>
+
+<!-- Модальное окно для AI-вердикта -->
+<div id="ai-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="ai-modal-title" tabindex="-1">
+    <div class="modal-content" role="document">
+        <button class="close-btn" aria-label="Закрыть окно">&times;</button>
+        <div id="ai-modal-body"></div>
+    </div>
+</div>
+
+<script src="/static/env.js" defer></script>
+<script type="module" src="/static/tasks.js" defer></script>
+
+</body>
+
+</html>

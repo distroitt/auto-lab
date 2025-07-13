@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>AutoLab - Анализатор кода</title>
+    <link rel="stylesheet" href="/static/header.css" />
+    <link rel="stylesheet" href="/static/upload_tasks.css" />
+    <link rel="stylesheet" href="/static/notification.css"/>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+
+</head>
+<body>
+  <header class="header">
+    <h1>AutoLab</h1>
+    <div style="display: flex; gap: 12px;">
+      <button class="header-btn" id="home-btn" onclick="window.location.href='/'" aria-label="Главная страница">
+        <i class="fas fa-home"></i> Главная
+      </button>
+    </div>
+  </header>
+
+  <main class="container" role="main">
+    <h1 class="page-title">Анализатор кода</h1>
+    <p class="page-description">
+      Загрузите C++ файлы для проверки линтером. Нет необходимости загружать файл с интерфейсом, он загрузится автоматически.
+    </p>
+
+    <section class="upload-section" aria-label="Форма загрузки файлов">
+      <div class="file-input-wrapper">
+        <input
+          type="file"
+          id="file-input"
+          multiple
+          accept=".cpp,.h,.hpp"
+          aria-describedby="file-desc"
+          aria-label="Выберите C++ файлы для загрузки"
+        />
+        <label for="file-input" class="custom-file-input" tabindex="0">
+          <span class="file-icon">📁</span>
+          <span>Выберите файлы</span>
+        </label>
+        <div id="file-desc" class="visually-hidden">Поддерживаются файлы с расширениями .cpp, .h, .hpp</div>
+      </div>
+
+      <div class="lab-select-wrapper">
+        <select id="lab-select" disabled aria-label="Выберите лабораторную работу">
+          <option value="" disabled selected>Загрузка лабораторных...</option>
+        </select>
+      </div>
+
+      <div class="button-group">
+        <button id="upload-btn" class="primary-btn" disabled aria-disabled="true">
+          Загрузить и проверить
+        </button>
+        <button id="reset-btn" class="secondary-btn" aria-label="Очистить выбранные файлы и лабораторную">
+          Очистить все
+        </button>
+      </div>
+    </section>
+
+    <section class="selected-files-section" id="selected-files" aria-live="polite" aria-label="Список выбранных файлов">
+      <h2 class="section-title">Выбранные файлы</h2>
+      <ul id="file-list" class="file-list" tabindex="0" aria-relevant="additions removals"></ul>
+    </section>
+
+    <section class="status-section" id="status-container" aria-live="polite" aria-atomic="true" hidden>
+      <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+        <div class="progress" id="progress"></div>
+      </div>
+      <p id="status-text" class="status-text">Подготовка...</p>
+    </section>
+
+    <section class="results-section" id="results-container" hidden aria-live="polite"></section>
+  </main>
+
+  <script src="/static/env.js"></script>
+  <script type="module" src="/static/upload_tasks.js"></script>
+</body>
+</html>
