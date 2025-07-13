@@ -25,42 +25,34 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Обновленная функция для проверки статуса аутентификации и обновления URL кнопки
     async function checkAuthStatus() {
         const isAuthenticated = localStorage.getItem('isAuthenticated') === 'true';
 
         loginBtn.style.display = isAuthenticated ? 'none' : 'flex';
         logoutBtn.style.display = isAuthenticated ? 'flex' : 'none';
 
-        // Показываем кнопку профиля только для администратора
         if (isAuthenticated) {
             const isAdmin = await checkIsAdmin();
             profileBtn.style.display = isAdmin ? 'flex' : 'none';
 
-            // Обновляем URL для кнопки work-btn в зависимости от роли пользователя
             if (workButton) {
                 if (isAdmin) {
-                    // URL для администраторов
                     workButton.href = "/admin";
                 } else {
-                    // URL для обычных пользователей
                     workButton.href = "/tasks";
                 }
             }
         } else {
             profileBtn.style.display = 'none';
 
-            // Для неавторизованных пользователей также устанавливаем URL на /tasks
             if (workButton) {
                 workButton.href = "/tasks";
             }
         }
     }
 
-    // Инициализация при загрузке страницы
     checkAuthStatus();
 
-    // Показ/скрытие модального окна авторизации с анимацией
     loginBtn.addEventListener('click', () => {
         loginModal.style.display = 'flex';
         loginModal.style.animation = 'fadeIn 0.3s ease-out';
@@ -73,7 +65,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 300);
     });
 
-    // Закрытие модального окна при клике вне его области
     window.addEventListener('click', e => {
         if (e.target === loginModal) {
             loginModal.style.animation = 'fadeOut 0.3s ease-out';
@@ -82,9 +73,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }, 300);
         }
     });
-    // Обработка логаута с улучшенной обратной связью
     logoutBtn.addEventListener('click', () => {
-        // Анимация выхода
         logoutBtn.classList.add('logging-out');
 
         localStorage.removeItem('isAuthenticated');
@@ -95,10 +84,9 @@ document.addEventListener('DOMContentLoaded', () => {
             method: "POST",
             credentials: "include"
         }).then(() => {
-            checkAuthStatus(); // Обновит URL кнопки при выходе
+            checkAuthStatus();
             logoutBtn.classList.remove('logging-out');
 
-            // Необязательно: всплывающее уведомление об успешном выходе
             showNotification('Вы успешно вышли из системы', 'success');
         }).catch(error => {
             console.error('Ошибка при выходе:', error);
@@ -106,7 +94,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Переход в профиль с проверкой роли
     profileBtn.addEventListener('click', () => {
         const isAdmin = localStorage.getItem('isAdmin') === 'true';
         if (isAdmin) {
@@ -114,7 +101,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Обработка формы авторизации
     authForm.addEventListener('submit', async event => {
         event.preventDefault();
         const username = document.getElementById("username").value;
@@ -138,7 +124,6 @@ document.addEventListener('DOMContentLoaded', () => {
             localStorage.setItem('isAuthenticated', 'true');
             localStorage.setItem('username', username);
 
-            // Проверяем статус администратора и обновляем URL кнопки
             await checkAuthStatus();
 
             showNotification('Вход выполнен успешно', 'success');

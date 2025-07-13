@@ -1,6 +1,5 @@
 import {showNotification} from './notification.js';
 
-// Encapsulate task-related logic inside a TaskManager
 class TaskManager {
     constructor() {
         this.userId = this.extractUserIdFromUrl();
@@ -72,11 +71,9 @@ class TaskManager {
     }
 
     initModalEvents() {
-        // Close modal on close button click
         this.aiModalCloseBtn.onclick = () => {
             this.closeAiModal();
         };
-        // Close modal on clicking backdrop
         window.onclick = (event) => {
             if (event.target === this.aiModal) {
                 this.closeAiModal();
@@ -117,7 +114,6 @@ class TaskManager {
 
             this.openAiModal('');
 
-            // Update modal as soon as new chunks arrive (event-driven)
             while (true) {
                 const {done, value} = await reader.read();
                 if (done) break;
@@ -125,7 +121,6 @@ class TaskManager {
                 this.updateAiModalMarkdown(this.aiModalAccumResult);
             }
 
-            // Final update
             this.updateAiModalMarkdown(this.aiModalAccumResult);
             return this.aiModalAccumResult || 'Нейросеть не предоставила вердикт.';
         } catch (error) {
@@ -136,7 +131,6 @@ class TaskManager {
 
     renderTasks(tasksData) {
         this.container.innerHTML = '';
-        // prepend reverses order: better to sort keys ascending so prepend results in ascending
         const sortedTaskIds = Object.keys(tasksData).sort();
         for (const taskId of sortedTaskIds) {
             const taskDescription = tasksData[taskId];
@@ -148,7 +142,6 @@ class TaskManager {
         const taskContainer = document.createElement('div');
         taskContainer.className = 'task-container';
 
-        // --- Header ---
         const taskHeader = document.createElement('div');
         taskHeader.className = 'task-header';
         taskHeader.onclick = () => this.toggleContent(taskHeader);
@@ -159,18 +152,16 @@ class TaskManager {
         `;
         taskContainer.appendChild(taskHeader);
 
-        // --- Content ---
         if (taskDescription.status !== 'processing') {
             const taskContent = document.createElement('div');
             taskContent.className = 'task-content';
 
-            // Кнопка "Получить вердикт нейросети"
             const verdictButton = document.createElement('button');
             verdictButton.className = 'verdict-btn';
             verdictButton.textContent = 'Получить вердикт нейросети';
 
             verdictButton.onclick = async (e) => {
-                e.stopPropagation(); // Prevent toggle
+                e.stopPropagation();
                 verdictButton.disabled = true;
                 verdictButton.textContent = 'Загрузка...';
                 try {
@@ -186,7 +177,6 @@ class TaskManager {
 
             taskContent.appendChild(verdictButton);
 
-            // Content wrapper for lint and tests
             const contentWrapper = document.createElement('div');
             contentWrapper.className = 'content-wrapper';
 
@@ -236,14 +226,12 @@ class TaskManager {
             const level = diag.Level || 'Error';
             const {color, icon} = severityMeta[level] || severityMeta['Error'];
 
-            // Title line
             const title = document.createElement('div');
             title.className = 'lint-title';
             title.style.color = color;
             title.innerHTML = `<span style="font-size:1.2em;margin-right:7px;">${icon}</span><b>${diag.DiagnosticName || 'Без имени'}</b>`;
             diagDiv.appendChild(title);
 
-            // Message
             const message = diag.DiagnosticMessage?.Message || '';
             if (message) {
                 const msgDiv = document.createElement('div');
@@ -253,7 +241,6 @@ class TaskManager {
                 diagDiv.appendChild(msgDiv);
             }
 
-            // File and line
             const file = diag.DiagnosticMessage?.FilePath || '';
             if (file) {
                 const split_file = file.split('/').pop(); // last part
@@ -272,7 +259,6 @@ class TaskManager {
     }
 
     renderTestSummaryBlock(summary, taskId, wrapper, result) {
-        // Создаём визуальный summary-блок
         const statBlock = document.createElement('div');
         statBlock.className = 'test-stats-summary';
 
@@ -297,9 +283,7 @@ class TaskManager {
             <span class="stat-val fail">${summary.failed}</span>
         </div>
     `;
-        // вставляем summary-
 wrapper.appendChild(statBlock);
-        // Далее основной блок с тестами (оставляем как было, только переносим вниз)
         const summaryBlock = document.createElement('div');
         summaryBlock.className = 'test-summary';
 
@@ -329,7 +313,6 @@ wrapper.appendChild(statBlock);
 
             summaryBlock.innerHTML = html;
 
-            // добавляем обработчики кнопок "Показать тест"
             setTimeout(() => {
                 const buttons = summaryBlock.querySelectorAll('.show-test-btn');
                 buttons.forEach(btn => {
@@ -355,11 +338,10 @@ wrapper.appendChild(statBlock);
         } else {
             summaryBlock.textContent = 'Все тесты успешно пройдены.';
         }
-        wrapper.appendChild(summaryBlock); // после summary вставляем подробности
+        wrapper.appendChild(summaryBlock);
     }
 
 
-    // Simple HTML escaping utility
     escapeHtml(text) {
         return text
             .replace(/&/g, "&amp;")

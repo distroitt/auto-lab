@@ -24,7 +24,6 @@ let prevContent = '';
 let aiMessages = [];
 let monacoLoaded = false;
 
-// Инициализация Monaco Editor один раз
 function initializeMonacoEditor() {
   return new Promise((resolve) => {
     if (monacoLoaded) {
@@ -357,7 +356,6 @@ async function getInterfaceContent(labNum) {
   }
 }
 
-// Реализация showReauthModal (создается один раз)
 let authModal = null;
 async function showReauthModal() {
   return new Promise(resolve => {

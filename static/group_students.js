@@ -39,7 +39,6 @@ function showLoading() {
 }
 
 
-// Создаем и возвращаем элемент кнопки файлов отдельной функцией
 function createFilesButton(submitId, username) {
     const btn = document.createElement("button");
     btn.type = "button";
@@ -80,7 +79,6 @@ function createCodeModal() {
         modal.focus();
     });
 
-    // Закрытие модала при клике на фон
     modal.addEventListener("click", (e) => {
         if (e.target === modal) {
             modal.classList.remove("show");
@@ -89,7 +87,6 @@ function createCodeModal() {
         }
     });
 
-    // Закрытие по ESC
     document.addEventListener("keydown", (e) => {
         if (e.key === "Escape" && modal.classList.contains("show")) {
             modal.classList.remove("show");
@@ -161,7 +158,6 @@ async function showSubmitFiles(submitId, username) {
             pre.className = "file-content";
 
             const code = document.createElement("code");
-            // Безопасно вставляем текст
             code.textContent = content || "";
 
             pre.appendChild(code);
@@ -206,7 +202,6 @@ async function renderStudentSubmits(student, container) {
 
         const fragment = document.createDocumentFragment();
 
-        // Ограничим отображение последних 20 посылок
         const submitEntries = Object.entries(submits).slice(0, 20);
 
         submitEntries.forEach(([submitId, submit]) => {
@@ -226,7 +221,7 @@ async function renderStudentSubmits(student, container) {
             idSpan.className = "submit-id";
             idSpan.title = submitId;
             idSpan.textContent = shortId;
-            idSpan.tabIndex = 0; // Чтобы можно было фокусироваться клавишами
+            idSpan.tabIndex = 0;
 
             const statusSpan = document.createElement("span");
             statusSpan.className = `submit-status ${submit.status === "completed" ? "completed" : "failed"}`;
@@ -269,7 +264,6 @@ async function renderStudents(students) {
         return;
     }
 
-    // Создаем элементы для всех студентов и запускаем загрузку посылок параллельно
     const fragment = document.createDocumentFragment();
     const submitsLoaders = [];
 
@@ -293,13 +287,11 @@ async function renderStudents(students) {
         studentDiv.appendChild(submitsSummaryDiv);
         fragment.appendChild(studentDiv);
 
-        // Асинхронно загружаем посылки
         submitsLoaders.push(renderStudentSubmits(student, submitsSummaryDiv));
     });
 
     container.appendChild(fragment);
 
-    // Для загрузки посылок всех студентов параллельно (опционально)
     await Promise.all(submitsLoaders);
 }
 
@@ -354,5 +346,4 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 });
 
-// Добавляем функцию в глобальную область для кнопок
 window.showSubmitFiles = showSubmitFiles;

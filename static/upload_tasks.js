@@ -165,7 +165,6 @@ document.addEventListener("DOMContentLoaded", () => {
     statusText.textContent = "Подготовка файлов...";
     uploadBtn.disabled = true;
 
-    // Проверка файлов на размер (например до 20 МБ общий)
     const totalSize = files.reduce((acc, f) => acc + f.size, 0);
     const maxSize = 20 * 1024 * 1024;
     if (totalSize > maxSize) {
@@ -179,7 +178,6 @@ document.addEventListener("DOMContentLoaded", () => {
     files.forEach((f) => formData.append("files", f));
 
     try {
-      // Получаем имя интерфейса
       const interfaceResp = await fetch(
         `${window.env.API_BASE_URL}/api/labs/${labSelect.value}/interface_name`
       );
@@ -276,7 +274,6 @@ document.addEventListener("DOMContentLoaded", () => {
       try {
         const response = await fetch(`${window.env.API_BASE_URL}/api/task/${taskId}`);
         if (!response.ok) {
-          // Не готово пока
           console.log(`Еще не готово: попытка ${retries}`);
           return;
         }
@@ -324,7 +321,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const testTotal = result.test_result.total;
   const grade = result.grade;
 
-  // Стили классов по состоянию
   let alertClass = warnCount > 0 ? "check-results-alert--warning" : "check-results-alert--ok";
   let alertIcon = warnCount > 0
     ? '<i class="fas fa-exclamation-triangle check-results-alert__icon"></i>'
@@ -399,3 +395,4 @@ document.addEventListener("DOMContentLoaded", () => {
 
   init();
 });
+``
