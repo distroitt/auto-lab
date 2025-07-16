@@ -1,4 +1,3 @@
-#autolab
 To run the project you need:
 - Installed Docker
 - Python 3+
