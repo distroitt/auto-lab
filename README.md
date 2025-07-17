@@ -1,3 +1,5 @@
+The main goal of this project is to streamline and automate the process of submitting, checking, and assessing laboratory assignments for students and teachers. By providing a convenient web interface, the system enables students to submit their code and receive instant feedback on test results, linter warnings, and AI-powered suggestions for improvement. For teachers, the platform offers an efficient way to review, manage, and evaluate students’ submissions, define requirements, and even generate custom tests using AI assistance.
+
 To run the project you need:
 - Installed Docker
 - Python 3+
